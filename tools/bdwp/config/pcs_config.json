@@ -1,17 +1,6 @@
 {
- "baidu_active_uid": 1143732642,
- "baidu_user_list": [
-  {
-   "uid": 1143732642,
-   "name": "敢问好说",
-   "sex": "♀",
-   "age": 5.6,
-   "bduss": "5jM2RMUktDbFhxMzRUa0pNRkpteUoyZFY4VDVaTEYxMDFram9WOTFtSXRZfjlkRUFBQUFBJCQAAAAAAAAAAAEAAACi-StEuNLOyrrDy7UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC3W110t1tddM0",
-   "ptoken": "a510de49cce246cdc13afd0029960f82",
-   "stoken": "d9bbcbc47c7a45f07b88b6a2b73c077230a179367440904d1d061a663f8e98a7",
-   "workdir": "/"
-  }
- ],
+ "baidu_active_uid": 0,
+ "baidu_user_list": [],
  "appid": 266719,
  "cache_size": 30000,
  "max_parallel": 300,
