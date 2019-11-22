@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+ROOT=$(pwd)
+EXE=$ROOT/tools/bdwp/BaiduPCS-Go
+#EXE=$SELF/bin/BaiduPCS-Go
+CONFIG=$ROOT/tools/bdwp/config
+INPUT="$ROOT/video/*"
+PATH=/apps/baidu_shurufa/youtube
+
+export BAIDUPCS_GO_CONFIG_DIR=$CONFIG
+
+COMM="$EXE upload $INPUT $PATH"
+
+#$EXE
+echo $COMM && $COMM
+
