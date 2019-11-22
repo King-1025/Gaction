@@ -19,5 +19,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: 获取视频
       run: ./downloader
-    - name: 上传视频
-      run: ./uploader
+    - name: 下载视频
+      uses: actions/download-artifact@v1
+      with:
+        name: video
+        path: video
