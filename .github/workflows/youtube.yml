@@ -20,7 +20,7 @@ jobs:
     - name: 获取视频
       run: ./downloader
     - name: 下载视频
-      uses: actions/download-artifact@v1
+      uses: actions/upload-artifact@v1
       with:
         name: video
         path: video
