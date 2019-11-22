@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-echo pass!
-exit 0
+#echo pass!
+#exit 0
 
 ROOT=$(pwd)
 EXE=$ROOT/tools/bdwp/BaiduPCS-Go
