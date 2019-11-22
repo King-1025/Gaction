@@ -1,12 +1,41 @@
 #!/usr/bin/env bash
 
 ROOT=$(pwd)
-EXE=$ROOT/tools/youtube-dl
-URL=$ROOT/url.list
-OUTPUT="$ROOT/video/%(title)s.%(ext)s"
+TOOLS=$ROOT/tools
+README=$ROOT/README.md
+URL_LIST=$ROOT/url.list
+OUTPUT_DIR=$ROOT/video
 
-COMM="$EXE -o $OUTPUT -a $URL"
+function setup()
+{
+   rm -rf $URL_LIST
+   while read line; do
+     echo $line | grep -qvE "^[#|=]"
+     if [ $? -eq 0 ] && [ "$line" != "" ]; then
+        echo $line | tee -a $URL_LIST
+     fi
+   done < $README
+}
 
-echo $COMM && $COMM
+function use()
+{
+  local comm=""
+  if [ $# -ge 1 ]; then
+     local tag=$1
 
+     if [ "$tag" = "you-get" ]; then
+       comm="$TOOLS/you-get/you-get -I $URL_LIST -o $OUTPUT_DIR -a"
+     fi
 
+     if [ "$tag" = "youtube-dl" ]; then
+       comm="$TOOLS/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/%(title)s.%(ext)s"
+     fi
+  fi
+  if [ "$comm" != "" ]; then
+     echo $comm && $comm
+  else
+     echo no command!
+  fi
+}
+
+setup && use you-get
