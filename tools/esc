@@ -61,7 +61,8 @@ class Escience:
             self.auth()
 
     def upload(self,path,name):
-        url = 'http://ddl.escience.cn/king1025/upload?func=uploadFiles&parentRid=0&qqfile=%s' % name
+        #parentRid 上传目录位置 0:根目录
+        url = 'http://ddl.escience.cn/king1025/upload?func=uploadFiles&parentRid=11015818&qqfile=%s' % name
         data = open(os.path.join(path,name),'rb')
         header = {
 
