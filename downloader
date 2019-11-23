@@ -10,7 +10,7 @@ function setup()
 {
    rm -rf $URL_LIST
    while read line; do
-     echo $line | grep -qvE "^[#|=]"
+     echo $line | grep -qvE "^[#|=|-]"
      if [ $? -eq 0 ] && [ "$line" != "" ]; then
         echo $line | tee -a $URL_LIST
      fi
@@ -38,4 +38,4 @@ function use()
   fi
 }
 
-setup && use youtube-dl
+setup #&& use youtube-dl
