@@ -4,21 +4,45 @@
 #exit 0
 
 ROOT=$(pwd)
-EXE=$ROOT/tools/bdwp/BaiduPCS-Go
-#EXE=$SELF/bin/BaiduPCS-Go
-CONFIG=$ROOT/tools/bdwp/config
-INPUT="$ROOT/video/*"
-PATH=/apps/baidu_shurufa/youtube
-#BDUSS="5jM2RMUktDbFhxMzRUa0pNRkpteUoyZFY4VDVaTEYxMDFram9WOTFtSXRZfjlkRUFBQUFBJCQAAAAAAAAAAAEAAACi-StEuNLOyrrDy7UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC3W110t1tddM0"
-BDUSS="y1PVDJ2fjRIYjV1NU5ac0ZlZUNZLWhCUmgyMjI0fjR0VW8zZGFTVVdlRGdsfjlkSVFBQUFBJCQAAAAAAAAAAAEAAACSFvKuAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOAK2F3gCthdT"
+INPUT="$ROOT/video"
 
-export BAIDUPCS_GO_CONFIG_DIR=$CONFIG
+if [ ! -e $INPUT ]; then
+   echo $INPUT not exist!
+   exit 1
+fi
 
-COMM="$EXE login -bduss=$BDUSS"
+function esc()
+{
+   local exe="$ROOT/tools/esc"
+   local comm="$exe $INPUT"
 
-echo $COMM && $COMM
+   echo $comm && $comm
 
-COMM="$EXE upload $INPUT $PATH"
+#   for i in $(find $INPUT -type f -print); do
+#      echo "$i upload..."
+#      local comm="$exe $INPUT $(basename $i)"
+#      echo $comm && $comm
+#   done
 
-#$EXE
-echo $COMM && $COMM
+}
+
+function baidu()
+{
+   local exe="$ROOT/tools/bdwp/BaiduPCS-Go"
+   local config="$ROOT/tools/bdwp/config"
+   local path="/apps/baidu_shurufa/youtube"
+   local bduss="5jM2RMUktDbFhxMzRUa0pNRkpteUoyZFY4VDVaTEYxMDFram9WOTFtSXRZfjlkRUFBQUFBJCQAAAAAAAAAAAEAAACi-StEuNLOyrrDy7UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC3W110t1tddM0"
+   #BDUSS="y1PVDJ2fjRIYjV1NU5ac0ZlZUNZLWhCUmgyMjI0fjR0VW8zZGFTVVdlRGdsfjlkSVFBQUFBJCQAAAAAAAAAAAEAAACSFvKuAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOAK2F3gCthdT"
+
+   export BAIDUPCS_GO_CONFIG_DIR=$config
+
+   local comm="$exe login -bduss=$bduss"
+
+   echo $comm && $comm
+
+   comm="$exe upload $INPUT/* $path"
+
+   echo $comm && $comm
+}
+
+esc

@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8; -*-
+
+import os
+import sys
+#import shutil
+import requests
+
+class Escience:
+    def __init__(self, name, password):
+        self.name = name
+        self.password = password
+        self.session = requests.Session()
+        self.isLogin = False
+        self.header = {
+                       'Host': 'ddl.escience.cn',
+                       'Connection': 'keep-alive',
+                       'Origin': 'http://ddl.escience.cn',
+                       'X-Requested-With': 'XMLHttpRequest',
+                       'User-Agent': 'Mozilla/5.0 (Linux; Android 5.1; OPPO R7s Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 Mobile Safari/537.36',
+                       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                       'Accept': 'application/json, text/javascript, */*; q=0.01',
+                       'Referer': 'http://ddl.escience.cn/king1025/list',
+                       'Accept-Encoding': 'gzip, deflate',
+                       'Accept-Language': 'zh-CN,zh;q=0.9',
+                    }
+
+
+    def auth(self):
+        url = 'https://passport.escience.cn/oauth2/authorize?client_id=87142&redirect_uri=http://ddl.escience.cn/system/login/token&response_type=code&state=http://ddl.escience.cn/pan/list&theme=full'
+        data = {'act': 'Validate',
+                'pageinfo': 'userinfo',
+                'theme': 'full',
+                'userName': '%s' % self.name,
+                'password': '%s' % self.password,
+            }
+        try:
+            r = self.session.post(url, headers=self.header, data=data, verify=False, allow_redirects=False)
+            r_location = r.headers['Location']
+            self.session.post(url=r_location, headers=self.header,verify=False,allow_redirects=False)
+            self.isLogin = True
+ #           print('redirect url:%s' % r_location)
+            print("auth success!\n")
+        except:
+            print("auth failed!\n")
+
+    def login(self):
+        url = 'https://passport.escience.cn/oauth2/authorize'
+        params = {
+            "response_type": "code",
+            "redirect_uri": "http%3A%2F%2Fddl.escience.cn%2Fsystem%2Flogin%2Ftoken",
+            "client_id": "87142",
+            "theme": "full",
+            "state": "http%3A%2F%2Fddl.escience.cn%2Fpan%2Flist"
+        }
+        r = self.session.get(url, params=params, headers=self.header, verify=True)
+        if r.status_code != 200:
+            print("login_pages response Failed!")
+        else:
+            print('login_page response oK!')
+            self.auth()
+
+    def upload(self,path,name):
+        url = 'http://ddl.escience.cn/king1025/upload?func=uploadFiles&parentRid=0&qqfile=%s' % name
+        data = open(os.path.join(path,name),'rb')
+        header = {
+
+                       'Host': 'ddl.escience.cn',
+                       'Connection': 'keep-alive',
+                       'Origin': 'http://ddl.escience.cn',
+                       'X-Requested-With': 'XMLHttpRequest',
+                       'X-File-Name': name,
+                       'User-Agent': 'Mozilla/5.0 (Linux; Android 5.1; OPPO R7s Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 Mobile Safari/537.36',
+                       'Content-Type': 'application/octet-stream',
+                       'Accept': '*/*',
+                       'Referer': 'http://ddl.escience.cn/king1025/list',
+                       'Accept-Encoding': 'gzip, deflate',
+                       'Accept-Language': 'zh-CN,zh;q=0.9',
+                       }
+
+        r = self.session.post(url=url, headers=header, data=data)
+        if r.status_code == 200:
+            print("upload success!")
+        else:
+            print("upload failed!")
+
+if __name__ == '__main__':
+    esc = Escience("18749089524","12345678x")
+    esc.login()
+    if esc.isLogin == True:
+        work_dir = str(sys.argv[1])
+        for parent, dirnames, filenames in os.walk(work_dir,  followlinks=True):
+          for filename in filenames:
+             file_path = os.path.join(parent, filename)
+             print('文件名：%s' % filename)
+             print('文件完整路径：%s' % file_path)
+             print('开始上传...')
+             esc.upload(parent,filename)
+             print('')
+#    esc.upload(sys.argv[1],sys.argv[2])
