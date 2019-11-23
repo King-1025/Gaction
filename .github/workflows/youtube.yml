@@ -1,4 +1,4 @@
-name: YouTube视频下载
+name: YouTube视频转存
 
 on: [push]
 
@@ -27,11 +27,14 @@ jobs:
         #    ${{ runner.os }}-pip-
 
     - name: 安装依赖
-      run: pip install requests 
-    - name: 列出依赖
-      run: pip list
+      run: pip install requests
+
+      #    - name: 列出依赖
+      #run: pip list
+
     - name: 获取视频
       run: ./downloader
+
     - name: 云盘上传
       run: ./uploader
 

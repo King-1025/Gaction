@@ -48,6 +48,7 @@ class Escience:
             print("auth success!\n")
         except:
             print("auth failed!\n")
+            sys.exit(1)
 
     def login(self):
         url = 'https://passport.escience.cn/oauth2/authorize'
@@ -60,7 +61,8 @@ class Escience:
         }
         r = self.session.get(url, params=params, headers=self.header, verify=True)
         if r.status_code != 200:
-            print("login_pages response Failed!")
+            print("login_pages response nO!")
+            sys.exit(1)
         else:
             print('login_page response oK!')
             self.auth()
