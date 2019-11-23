@@ -38,4 +38,4 @@ function use()
   fi
 }
 
-setup #&& use youtube-dl
+setup && use youtube-dl
