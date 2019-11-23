@@ -3,15 +3,19 @@
 
 import os
 import sys
-#import shutil
 import requests
 
+#科研在线 http://ddl.escience.cn/king1025/list#path=%2F11015861
 class Escience:
-    def __init__(self, name, password):
+    def __init__(self, name, password,
+                 zone="king1025",
+                 parentRid="11015861"): #代表目录名: video
         self.name = name
         self.password = password
         self.session = requests.Session()
         self.isLogin = False
+        self.zone = zone
+        self.parentRid = parentRid  
         self.header = {
                        'Host': 'ddl.escience.cn',
                        'Connection': 'keep-alive',
@@ -20,7 +24,7 @@ class Escience:
                        'User-Agent': 'Mozilla/5.0 (Linux; Android 5.1; OPPO R7s Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 Mobile Safari/537.36',
                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                        'Accept': 'application/json, text/javascript, */*; q=0.01',
-                       'Referer': 'http://ddl.escience.cn/king1025/list',
+                       'Referer': 'http://ddl.escience.cn/%s/list' % self.zone,
                        'Accept-Encoding': 'gzip, deflate',
                        'Accept-Language': 'zh-CN,zh;q=0.9',
                     }
@@ -62,7 +66,7 @@ class Escience:
 
     def upload(self,path,name):
         #parentRid 上传目录位置 0:根目录
-        url = 'http://ddl.escience.cn/king1025/upload?func=uploadFiles&parentRid=11015818&qqfile=%s' % name
+        url = 'http://ddl.escience.cn/%s/upload?func=uploadFiles&parentRid=%s&qqfile=%s' % (self.zone,self.parentRid,name)
         data = open(os.path.join(path,name),'rb')
         header = {
 
@@ -74,7 +78,7 @@ class Escience:
                        'User-Agent': 'Mozilla/5.0 (Linux; Android 5.1; OPPO R7s Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 Mobile Safari/537.36',
                        'Content-Type': 'application/octet-stream',
                        'Accept': '*/*',
-                       'Referer': 'http://ddl.escience.cn/king1025/list',
+                       'Referer': 'http://ddl.escience.cn/%s/list' % self.zone,
                        'Accept-Encoding': 'gzip, deflate',
                        'Accept-Language': 'zh-CN,zh;q=0.9',
                        }
@@ -93,9 +97,9 @@ if __name__ == '__main__':
         for parent, dirnames, filenames in os.walk(work_dir,  followlinks=True):
           for filename in filenames:
              file_path = os.path.join(parent, filename)
-             print('文件名：%s' % filename)
-             print('文件完整路径：%s' % file_path)
-             print('开始上传...')
+             print('file：%s' % filename)
+             print('path：%s' % file_path)
+             print('upload...')
              esc.upload(parent,filename)
              print('')
 #    esc.upload(sys.argv[1],sys.argv[2])
