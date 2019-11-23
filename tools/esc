@@ -3,6 +3,7 @@
 
 import os
 import sys
+import urllib
 import requests
 
 #科研在线 http://ddl.escience.cn/king1025/list#path=%2F11015861
@@ -65,8 +66,9 @@ class Escience:
             self.auth()
 
     def upload(self,path,name):
+        qname = urllib.request.quote(name)
         #parentRid 上传目录位置 0:根目录
-        url = 'http://ddl.escience.cn/%s/upload?func=uploadFiles&parentRid=%s&qqfile=%s' % (self.zone,self.parentRid,name)
+        url = 'http://ddl.escience.cn/%s/upload?func=uploadFiles&parentRid=%s&qqfile=%s' % (self.zone,self.parentRid,qname)
         data = open(os.path.join(path,name),'rb')
         header = {
 
@@ -74,7 +76,7 @@ class Escience:
                        'Connection': 'keep-alive',
                        'Origin': 'http://ddl.escience.cn',
                        'X-Requested-With': 'XMLHttpRequest',
-                       'X-File-Name': name,
+                       'X-File-Name': qname,
                        'User-Agent': 'Mozilla/5.0 (Linux; Android 5.1; OPPO R7s Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 Mobile Safari/537.36',
                        'Content-Type': 'application/octet-stream',
                        'Accept': '*/*',
