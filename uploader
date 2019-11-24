@@ -16,8 +16,9 @@ function esc()
    if [ ! -z $ESC_KEY ]; then
      local exe="$ROOT/tools/esc"
      local skey="$(echo $ESC_KEY | awk -F "/" '{print $1" "$2}')"
-     local comm="$exe $INPUT $skey"
-     echo $comm && $comm
+     local comm="$exe $skey $INPUT"
+     #echo $comm && 
+     $comm
   else
      echo Not found ESC_KEY!
      exit 1
@@ -40,7 +41,8 @@ function baidu()
 
    export BAIDUPCS_GO_CONFIG_DIR=$config
 
-   echo $comm && $comm
+   #echo $comm &&
+   $comm
 
    comm="$exe upload $INPUT/* $path"
 
