@@ -32,16 +32,14 @@ jobs:
       #    - name: 列出依赖
       #run: pip list
 
-    - name: 设置KEY
-      env: 
-         ESC_KEY: ${{ secrets.ESC_KEY }}
-         BAIDU_KEY: ${{ secrets.BAIDU_KEY }}
-
     - name: 获取视频
       run: ./downloader
 
     - name: 云盘上传
       run: ./uploader
+      env: 
+         ESC_KEY: ${{ secrets.ESC_KEY }}
+         BAIDU_KEY: ${{ secrets.BAIDU_KEY }}
 
       #    - name: 下载视频
       #uses: actions/upload-artifact@v1
