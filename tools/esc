@@ -94,10 +94,13 @@ class Escience:
             print("upload failed!")
 
 if __name__ == '__main__':
-    esc = Escience("18749089524","12345678x")
+    if len(sys.argv) != 3:
+       print("it needs 3 arguments!")
+       sys.exit(1)
+    esc = Escience(str(sys.argv[1]),str(sys.argv[2]))
     esc.login()
     if esc.isLogin == True:
-        work_dir = str(sys.argv[1])
+        work_dir = str(sys.argv[3])
         for parent, dirnames, filenames in os.walk(work_dir,  followlinks=True):
           for filename in filenames:
              file_path = os.path.join(parent, filename)
