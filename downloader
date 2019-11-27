@@ -5,6 +5,8 @@ TOOLS=$ROOT/tools
 README=$ROOT/README.md
 URL_LIST=$ROOT/url.list
 OUTPUT_DIR=$ROOT/video
+#YOU_GET_OPTION=
+YOUTUBE_DL_OPTION="-f 136"
 
 function setup()
 {
@@ -24,11 +26,11 @@ function use()
      local tag=$1
 
      if [ "$tag" = "you-get" ]; then
-       comm="$TOOLS/you-get/you-get -I $URL_LIST -o $OUTPUT_DIR -a"
+       comm="$TOOLS/you-get/you-get -I $URL_LIST -o $OUTPUT_DIR -a $YOU_GET_OPTION"
      fi
 
      if [ "$tag" = "youtube-dl" ]; then
-       comm="$TOOLS/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/%(title)s.%(ext)s"
+       comm="$TOOLS/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/%(title)s.%(ext)s $YOUTUBE_DL_OPTION"
      fi
   fi
   if [ "$comm" != "" ]; then
