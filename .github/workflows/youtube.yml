@@ -26,7 +26,10 @@ jobs:
         #restore-keys: |
         #    ${{ runner.os }}-pip-
 
-    - name: 安装依赖
+    - name: 安装ffmpeg依赖
+      run: apt install ffmpeg -y
+
+    - name: 安装python requests依赖
       run: pip install requests
 
       #    - name: 列出依赖
