@@ -6,7 +6,7 @@ README=$ROOT/README.md
 URL_LIST=$ROOT/url.list
 OUTPUT_DIR=$ROOT/video
 #YOU_GET_OPTION=
-YOUTUBE_DL_OPTION="-f worstvideo+bestaudio --merge-output-format mp4"
+YOUTUBE_DL_OPTION="-f worstvideo+bestaudio" #--merge-output-format mp4"
 
 function setup()
 {
