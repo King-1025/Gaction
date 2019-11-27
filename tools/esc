@@ -92,6 +92,7 @@ class Escience:
             print("upload success!")
         else:
             print("upload failed!")
+            sys.exit(1)
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
