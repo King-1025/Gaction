@@ -1,3 +1,3 @@
-# 事桌吃香肠？来是已经习惯了
+# 路德视频-路钢穆
 ---
-http://185.38.13.130//mp43/344704.mp4?st=3F-vL0c4zx01Gk-2kRrrNg&e=1574627653
+https://m.youtube.com/watch?v=Lef_Mj3DooI
