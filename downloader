@@ -6,7 +6,7 @@ README=$ROOT/README.md
 URL_LIST=$ROOT/url.list
 OUTPUT_DIR=$ROOT/video
 #YOU_GET_OPTION=
-YOUTUBE_DL_OPTION="-f worstvideo+bestaudio" #--merge-output-format mp4"
+YOUTUBE_DL_OPTION="-f bestvideo+bestaudio" #--merge-output-format mp4"
 FMT="%(id)s.%(ext)s"
 
 function setup()
@@ -36,7 +36,7 @@ function use()
      fi
 
      if [ "$tag" = "youtube-dl" ]; then
-       comm="$TOOLS/youtube-dl -a $URL_LIST -o \"$OUTPUT_DIR/$FMT\" $YOUTUBE_DL_OPTION"
+       comm="$TOOLS/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/$FMT $YOUTUBE_DL_OPTION"
      fi
   fi
   if [ "$comm" != "" ]; then
