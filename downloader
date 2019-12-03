@@ -36,7 +36,7 @@ function use()
      fi
 
      if [ "$tag" = "youtube-dl" ]; then
-       comm="$TOOLS/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/$FMT $YOUTUBE_DL_OPTION"
+       comm="$TOOLS/youtube-dl -a $URL_LIST -o \"$OUTPUT_DIR/$FMT\" $YOUTUBE_DL_OPTION"
      fi
   fi
   if [ "$comm" != "" ]; then
