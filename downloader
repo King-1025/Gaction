@@ -17,7 +17,12 @@ function setup()
      if [ $? -eq 0 ] && [ "$line" != "" ]; then
         echo $line | tee -a $URL_LIST
      fi
+     echo $line | grep -qE "^#.*:"
+     if [ $? -eq 0 ] && [ "$line" != "" ]; then
+        FMT=$(echo $line | awk -F ":" '{print $2}')
+     fi
    done < $README
+   echo FMT:$FMT
 }
 
 function use()
@@ -41,4 +46,5 @@ function use()
   fi
 }
 
+#setup
 setup && use youtube-dl
