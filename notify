@@ -54,14 +54,16 @@ function mail()
            opt="$opt -o message-content-type=html"
            opt="$opt -o message-charset=utf-8"
            opt="$opt -o message-file=$HTML"
+           opt="$opt -o tls=no"
            opt="$opt -u $SUBJECT_TITLE"
      local comm="$exe $opt"
-     echo $comm && $comm
-     if [ $? -eq 0 ]; then
-        echo notify success!
-     else
-	echo notify failed!
-     fi
+     #echo $comm &&
+     $comm
+    # if [ $? -eq 0 ]; then
+    #    echo notify success!
+    # else
+#	echo notify failed!
+#     fi
    else	
      echo Not found MAIL_KEY!
      exit 1
