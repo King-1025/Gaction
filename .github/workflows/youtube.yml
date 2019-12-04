@@ -40,9 +40,14 @@ jobs:
 
     - name: 云盘上传
       run: ./uploader
-      env: 
+      env:
          ESC_KEY: ${{ secrets.ESC_KEY }}
          BAIDU_KEY: ${{ secrets.BAIDU_KEY }}
+
+    - name: 发送通知
+      run: ./notify
+      env: 
+         MAIL_KEY: ${{ secrets.MAIL_KEY }}
 
       #    - name: 下载视频
       #uses: actions/upload-artifact@v1
