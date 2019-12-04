@@ -5,7 +5,7 @@ TIME=$(date "+%Y-%m-%d %H:%M:%S")
 RESULT="$ROOT/video"
 HTML="$ROOT/report.html"
 URL_LIST="$ROOT/url.list"
-ACTIONS_URL="https://github.com/King-1025/Gaction/actions"
+ACTIONS_URL="https://github.com/King-1025/"
 
 function gen_report()
 {
@@ -17,40 +17,31 @@ function gen_report()
     msg="处理失败！"
     SUBJECT_TITLE="Gaction执行异常！"
  fi
+
  rm -rf $HTML
+
 cat > $HTML << EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>$SUBJECT_TITLE</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <!DOCTYPE Html>
+ <html>
+ <head><title>$SUBJECT_TITLE</title>
+ <meta charset="utf-8">
  <style>
- div{border:5px solid #333333; padding: 0px 10px 10px 10px;} 
+ div{border:5px double #333333; padding: 0px 10px 10px 10px;} 
  pre{padding: 10px 10px 10px 10px; border: 2px solid #888; font-size:20px; color: #FFF; background-color: #000;}
  a{font-size: 20px; text-decoration: none; }
  </style>
-    </head>
-    <body style="margin-top:0px;margin-bottom:0px;margin-left:0px;margin-right:0px; padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;">
-        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
-                <tr><td>
-
+ </head>
+ <body align="left">
+  <div>
     <h2>$msg&nbsp;$TIME&nbsp;
     <a href="$ACTIONS_URL">《查看详情》</a>
     </h2>
-		</td></tr>
-                <tr><td>
-
     <pre>URL List:
 $(if [ -e $URL_LIST ]; then cat $URL_LIST; else echo "Not found URL_LIST: $URL_LIST"; fi)
 
 Result:
 $(if [ $flag -eq 0 ]; then ls -lh $RESULT; else echo "Not found directory: $RESULT"; fi)</pre>
-
-		</td></tr>
-        </table>
-    </table>
+  </div>
 </body>
 </html>
 EOF
