@@ -25,18 +25,13 @@ cat > $HTML << EOF
  <html>
  <head><title>$SUBJECT_TITLE</title>
  <meta charset="utf-8">
- <style>
- div{border:5px double #333333; padding: 0px 10px 10px 10px;} 
- pre{padding: 10px 10px 10px 10px; border: 2px solid #888; font-size:20px; color: #FFF; background-color: #000;}
- a{font-size: 20px; text-decoration: none; }
- </style>
  </head>
  <body align="left">
-  <div>
-    <h2>$msg&nbsp;$TIME&nbsp;
-    <a href="$ACTIONS_URL">《查看详情》</a>
-    </h2>
-    <pre>URL List:
+  <div style="border:5px double #333333; padding: 0px 10px 10px 10px;" >
+    <p style="font-size: 32px;">$msg&nbsp;$TIME&nbsp;
+    <a style="font-size: 20px; text-decoration: none;" href="$ACTIONS_URL">《查看详情》</a>
+    </p>
+    <pre style="padding: 10px 10px 10px 10px; border: 2px solid #888; font-size:20px; color: #FFF; background-color: #000;">URL List:
 $(if [ -e $URL_LIST ]; then cat $URL_LIST; else echo "Not found URL_LIST: $URL_LIST"; fi)
 
 Result:
