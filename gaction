@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+ROOT=$(pwd)
+TASK=$ROOT/tasks
+CHECK_COMMAND="$TASK/check"
+DOWNLOAD_COMMAND="$TASK/download $ROOT"
+UPLOAD_COMMAND="$TASK/upload $ROOT"
+NOTIFY_COMMAND="$TASK/notify $ROOT"
+
+function app()
+{
+  if [ $# -le 1 ]; then
+    echo "Usage: $0 [check|download|upload|notify|new]"
+  else
+    local argc=$1; shift 
+    case "$1" in
+      "check") $CHECK_COMMAND;;
+      "download") $DOWNLOAD_COMMAND;;
+      "upload") $UPLOAD_COMMAND;;
+      "notify") $NOTIFY_COMMAND;;
+      "new") shift; create_task $*;;
+      *) echo error command! $1; exit 1;;
+    esac
+  fi
+}
+
+function create_task()
+{
+   declare -a list=($*)
+   local tmp=$(mktemp -u)
+   for((i=0; i < ${#list[@]}; i++)); do
+     echo "# NEW_$i"| tee $tmp
+     echo "---"  | tee -a $tmp
+     echo "${list[i]}" | tee -a $tmp
+   done
+   if [ -e $tmp ]; then
+     mv $tmp $ROOT/README.md
+     git commit -a -m "new" && upss -dt push
+   fi
+}
+
+app $# $*

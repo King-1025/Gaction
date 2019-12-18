@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+function app()
+{
+  check_ffmpeg
+  check_pip_packages
+}
+
+function check_ffmpeg()
+{ 
+  which ffmpeg
+  if [ $? -eq 1 ]; then
+     sudo apt autoremove \
+     && \
+     sudo apt update -y \
+     && \
+     sudo apt install ffmpeg -y
+  else
+     echo ffmpeg oK!
+  fi
+}
+
+function check_pip_packages()
+{
+  pip install requests
+  echo requests oK!
+}
+
+app $# $*
