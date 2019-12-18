@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+sudo apt autoremove
+sudo apt update -y
+sudo apt install ffmpeg -y
+
+pip install requests

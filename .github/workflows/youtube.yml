@@ -26,14 +26,8 @@ jobs:
         #restore-keys: |
         #    ${{ runner.os }}-pip-
 
-    - name: 安装ffmpeg依赖
-      run: sudo apt update && apt install ffmpeg -y
-
-    - name: 安装python requests依赖
-      run: pip install requests
-
-      #    - name: 列出依赖
-      #run: pip list
+    - name: 检查环境
+      run: ./check
 
     - name: 获取视频
       run: ./downloader
