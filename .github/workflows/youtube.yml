@@ -27,7 +27,7 @@ jobs:
         #    ${{ runner.os }}-pip-
 
     - name: 安装ffmpeg依赖
-      run: sudo apt install ffmpeg -y
+      run: sudo apt update && apt install ffmpeg -y
 
     - name: 安装python requests依赖
       run: pip install requests
