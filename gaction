@@ -10,7 +10,7 @@ NOTIFY_COMMAND="$TASK/notify $ROOT"
 function app()
 {
   if [ $# -le 1 ]; then
-    echo "Usage: $0 [check|download|upload|notify|new]"
+    echo "Usage: $0 [check|download|upload|notify|new|add]"
   else
     local argc=$1; shift 
     case "$1" in
@@ -19,9 +19,20 @@ function app()
       "upload") $UPLOAD_COMMAND;;
       "notify") $NOTIFY_COMMAND;;
       "new") shift; create_task $*;;
+      "add") shift; add_single_task $*;;
       *) echo error command! $1; exit 1;;
     esac
   fi
+}
+
+function add_single_task()
+{
+   if [ $# -eq 2 ]; then
+      echo "# $1" | tee    $ROOT/README.md
+      echo "---"  | tee -a $ROOT/README.md
+      echo $2     | tee -a $ROOT/README.md
+      git add $ROOT && git commit -m "$1" && upss -dt push
+   fi
 }
 
 function create_task()
