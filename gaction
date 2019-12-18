@@ -35,7 +35,7 @@ function create_task()
    done
    if [ -e $tmp ]; then
      mv $tmp $ROOT/README.md
-     git commit -a -m "new" && upss -dt push
+     git add $ROOT && git commit -m "new" && upss -dt push
    fi
 }
 
