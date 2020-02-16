@@ -2,10 +2,11 @@
 
 ROOT=$(pwd)
 TASK=$ROOT/tasks
-CHECK_COMMAND="$TASK/check"
-DOWNLOAD_COMMAND="$TASK/download $ROOT"
-UPLOAD_COMMAND="$TASK/upload $ROOT"
-NOTIFY_COMMAND="$TASK/notify $ROOT"
+
+COMMAND_CHECK="$TASK/check"
+COMMAND_DOWNLOAD="$TASK/download $ROOT"
+COMMAND_UPLOAD="$TASK/upload $ROOT"
+COMMAND_NOTIFY="$TASK/notify $ROOT"
 
 function app()
 {
@@ -14,10 +15,10 @@ function app()
   else
     local argc=$1; shift 
     case "$1" in
-      "check") $CHECK_COMMAND;;
-      "download") $DOWNLOAD_COMMAND;;
-      "upload") $UPLOAD_COMMAND;;
-      "notify") $NOTIFY_COMMAND;;
+      "check")    $COMMAND_CHECK;;
+      "download") $COMMAND_DOWNLOAD;;
+      "upload")   $COMMAND_UPLOAD;;
+      "notify")   $COMMAND_NOTIFY;;
       "new") shift; create_task $*;;
       "add") shift; add_single_task $*;;
       *) echo error command! $1; exit 1;;

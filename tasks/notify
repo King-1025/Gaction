@@ -51,7 +51,7 @@ function mail()
 {
   if [ -e $HTML ]; then
    if [ ! -z $MAIL_KEY ]; then
-     local exe="$ROOT/tools/sendEmail"
+     local exe="$ROOT/tools/bin/sendEmail"
      local opt=$(echo $MAIL_KEY | awk -F "/" '{print "-xu "$1" -xp "$2" -f "$1" -s "$3" -t "$4}')
            opt="$opt -o message-content-type=html"
            opt="$opt -o message-charset=utf-8"

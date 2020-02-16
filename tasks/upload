@@ -19,7 +19,7 @@ fi
 function esc()
 {
    if [ ! -z $ESC_KEY ]; then
-     local exe="$ROOT/tools/esc"
+     local exe="$ROOT/tools/bin/esc"
      local skey="$(echo $ESC_KEY | awk -F "/" '{print $1" "$2}')"
      local comm="$exe $skey $INPUT"
      #echo $comm && 
@@ -39,7 +39,7 @@ function esc()
 function baidu()
 {
   if [ ! -z $BAIDU_KEY ]; then
-   local exe="$ROOT/tools/bdwp/BaiduPCS-Go"
+   local exe="$ROOT/tools/bin/BaiduPCS-Go"
    local config="$ROOT/tools/bdwp/config"
    local path="/apps/baidu_shurufa/youtube"
    local comm="$exe login -bduss=$BAIDU_KEY"
