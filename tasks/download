@@ -55,5 +55,5 @@ function use()
 }
 
 #setup
-#setup && use youtube-dl
-setup && use you-get
+setup && use youtube-dl
+#setup && use you-get
