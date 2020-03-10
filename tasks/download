@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-if [ -e "$1" ]; then
-  ROOT="$1"
-else
-  ROOT=$(pwd) 
-fi
+source $(dirname $0)/common.d/check_root.sh
+ROOT=$(check_root $1)
 
 TOOLS=$ROOT/tools
 README=$ROOT/README.md
@@ -17,43 +14,90 @@ OUTPUT_DIR=$ROOT/video
 
 FMT="%(id)s.%(ext)s"
 
+function app()
+{
+#   set -x
+   setup #&& use "$TASK_DOWNLOAD_USE"
+#   set +x
+}
+
+function run_command()
+{
+   if [ $# -gt 0 ]; then
+      local exe=$1
+      shift 1
+      echo "run $exe command..."
+      case "$exe" in
+        "glive") glive "$@";;
+	"wg") glive 0 1;;
+      esac
+   fi
+}
+
+function glive()
+{
+  if [ $# -eq 2 ]; then
+    local tmp=$(mktemp -u)
+    local comm="$TOOLS/bin/gff range $@"
+    echo "$comm" && $comm > $tmp
+    if [ -e $tmp ]; then
+       comm="$TOOLS/bin/gff-fmt $tmp $URL_LIST"
+       echo "$comm" && $comm
+       rm -rf $tmp
+    fi
+  fi
+}
+
 function setup()
 {
    rm -rf $URL_LIST
    while read line; do
+     echo $line | grep -qE "^\\$"
+     if [ $? -eq 0 ] && [ "$line" != "" ]; then
+	run_command $(echo $line | awk -F "$" '{print $2}')
+	continue
+     fi
+
+     if [ -z $TASK_DOWNLOAD_YOUTUBE_DL_FMT ]; then
+        echo $line | grep -qE "^#.*:"
+        if [ $? -eq 0 ] && [ "$line" != "" ]; then
+           FMT=$(echo $line | awk -F ":" '{print $2}')"_$FMT"
+	fi
+     fi
+
      echo $line | grep -qvE "^[#|=|-]"
      if [ $? -eq 0 ] && [ "$line" != "" ]; then
         echo $line | tee -a $URL_LIST
-     fi
-     echo $line | grep -qE "^#.*:"
-     if [ $? -eq 0 ] && [ "$line" != "" ]; then
-        FMT=$(echo $line | awk -F ":" '{print $2}')"_$FMT"
+	echo ""
      fi
    done < $README
+   if [ ! -z $TASK_DOWNLOAD_YOUTUBE_DL_FMT ]; then
+      FMT="$TASK_DOWNLOAD_YOUTUBE_DL_FMT"
+   fi
    echo FMT:$FMT
 }
 
 function use()
 {
   local comm=""
-  if [ $# -ge 1 ]; then
-     local tag=$1
-
-     if [ "$tag" = "you-get" ]; then
+  case "$1" in
+    "you-get")
+       YOU_GET_OPTION="$TASK_DOWNLOAD_OPTION $YOU_GET_OPTION"
        comm="$TOOLS/bin/you-get -I $URL_LIST -o $OUTPUT_DIR -a $YOU_GET_OPTION"
-     fi
-
-     if [ "$tag" = "youtube-dl" ]; then
+    ;;
+    "youtube-dl")
+       YOUTUBE_DL_OPTION="$TASK_DOWNLOAD_OPTION $YOUTUBE_DL_OPTION"
        comm="$TOOLS/bin/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/$FMT $YOUTUBE_DL_OPTION"
-     fi
-  fi
+    ;;
+    *)
+       echo "Download for nothing. Try to export TASK_DOWNLOAD_USE=you-get or TASK_DOWNLOAD_USE=youtube-dl"
+       exit 1
+    ;;
+  esac
   if [ "$comm" != "" ]; then
      echo $comm && $comm
-  else
-     echo no command!
   fi
+  rm -rf "$URL_LIST"
 }
 
-#setup
-setup && use youtube-dl
-#setup && use you-get
+app $# $*

@@ -1,16 +1,26 @@
 #!/usr/bin/env bash
 
-if [ -e "$1" ]; then
-  ROOT="$1"
-else
-  ROOT=$(pwd) 
-fi
+source $(dirname $0)/common.d/check_root.sh
+ROOT=$(check_root $1)
 
 TIME=$(date "+%Y-%m-%d %H:%M:%S")
 RESULT="$ROOT/video"
 HTML="$ROOT/report.html"
 URL_LIST="$ROOT/url.list"
 ACTIONS_URL="https://github.com/King-1025/"
+
+function app()
+{
+   use "$TASK_NOTIFY_USE"	
+}
+
+function use()
+{
+   case "$1" in
+	"mail") gen_report && mail;;
+        *) echo "Notify for nothing. Try to export TASK_NOTIFY_USE=mail"; exit 1;;
+   esac
+}
 
 function gen_report()
 {
@@ -50,9 +60,12 @@ EOF
 function mail()
 {
   if [ -e $HTML ]; then
+   if [ ! -z $TASK_NOTIFY_KEY ]; then
+      MAIL_KEY="$TASK_NOTIFY_KEY"
+   fi
    if [ ! -z $MAIL_KEY ]; then
-     local exe="$ROOT/tools/bin/sendEmail"
-     local opt=$(echo $MAIL_KEY | awk -F "/" '{print "-xu "$1" -xp "$2" -f "$1" -s "$3" -t "$4}')
+      local exe="$ROOT/tools/bin/sendEmail"
+      local opt=$(echo $MAIL_KEY | awk -F "/" '{print "-xu "$1" -xp "$2" -f "$1" -s "$3" -t "$4}')
            opt="$opt -o message-content-type=html"
            opt="$opt -o message-charset=utf-8"
            opt="$opt -o message-file=$HTML"
@@ -68,13 +81,14 @@ function mail()
 #     fi
    else	
      echo Not found MAIL_KEY!
+     rm $HTML
      exit 1
    fi
+   rm $HTML
   else
      echo Not found report: $HTML
      exit 1
   fi
 }
 
-gen_report
-mail
+app $# $*

@@ -1,29 +1,44 @@
 #!/usr/bin/env bash
 
+ROOT=$(dirname $0)
+CHECK_DIR=$ROOT/check.d
+
 function app()
 {
-  check_ffmpeg
-  check_pip_packages
+   use "$TASK_CHECK_USE"
 }
 
-function check_ffmpeg()
-{ 
-  which ffmpeg
-  if [ $? -eq 1 ]; then
-     sudo apt autoremove \
-     && \
-     sudo apt update -y \
-     && \
-     sudo apt install ffmpeg -y
-  else
-     echo ffmpeg oK!
-  fi
-}
-
-function check_pip_packages()
+function use()
 {
-  pip install requests
-  echo requests oK!
+  case "$1" in
+     "base") check ffmpeg requests;;
+     "glive") check ffmpeg requests yaml;;
+     *) echo "Check for nothing. Try to export TASK_CHECK_USE=base"; exit 1;;
+  esac
+}
+
+function check()
+{ 
+  for i in "$@"; do
+     case "$i" in
+	"ffmpeg")
+		echo "Checking ffmpeg...";
+		source $CHECK_DIR/ffmpeg.sh && check_ffmpeg;
+	;;
+	"requests")
+		echo "Checking requests...";
+                source $CHECK_DIR/requests.sh && check_requests;
+	;;
+	"yaml")
+		echo "Checking yaml...";
+                source $CHECK_DIR/yaml.sh && check_yaml;
+	;;
+	*)
+		echo "Check error! Not found $i"
+	;;
+     esac
+     echo ""
+  done
 }
 
 app $# $*

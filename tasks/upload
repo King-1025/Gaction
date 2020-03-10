@@ -3,21 +3,35 @@
 #echo pass!
 #exit 0
 
-if [ -e "$1" ]; then
-  ROOT="$1"
-else
-  ROOT=$(pwd) 
-fi
+source $(dirname $0)/common.d/check_root.sh
+ROOT=$(check_root $1)
 
 INPUT="$ROOT/video"
 
-if [ ! -e $INPUT ]; then
-   echo $INPUT not exist!
-   exit 1
-fi
+function app()
+{
+  if [ -e $INPUT ]; then
+     use "$TASK_UPLOAD_USE"
+  else
+     echo $INPUT not exist!
+     exit 1
+  fi
+}
+
+function use()
+{
+    case "$1" in
+	 "esc") esc;;
+	 "baidu") baidu;;
+         *) echo "Upload for nothing. Try to export TASK_UPLOAD_USE=esc or TASK_UPLOAD_USE=baidu"; exit 1;;
+    esac
+}
 
 function esc()
 {
+  if [ ! -z $TASK_UPLOAD_KEY ]; then
+     ESC_KEY=$TASK_UPLOAD_KEY
+  fi
    if [ ! -z $ESC_KEY ]; then
      local exe="$ROOT/tools/bin/esc"
      local skey="$(echo $ESC_KEY | awk -F "/" '{print $1" "$2}')"
@@ -38,6 +52,9 @@ function esc()
 
 function baidu()
 {
+  if [ ! -z $TASK_UPLOAD_KEY ]; then
+     BAIDU_KEY=$TASK_UPLOAD_KEY
+  fi
   if [ ! -z $BAIDU_KEY ]; then
    local exe="$ROOT/tools/bin/BaiduPCS-Go"
    local config="$ROOT/tools/bdwp/config"
@@ -58,5 +75,4 @@ function baidu()
  fi
 }
 
-esc
-#baidu
+app $# $*

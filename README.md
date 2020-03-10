@@ -1,3 +1,1 @@
-# NEW_0
----
-http://vod.livestream.com/5e65409c_5db66b2b915422c4e6ef42e9058750cea0c75364/events/00000000007d1569/2f30fb03-522c-4aa8-9dd6-4668284b4c19_628.m3u8
+$ wg
