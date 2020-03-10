@@ -33,6 +33,7 @@ function run_command()
 	"test") echo "nothing to be done!";;
 	*) echo "Not found command $exe!"; exit 1;;
       esac
+      echo ""
    fi
 }
 
