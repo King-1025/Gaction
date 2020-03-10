@@ -58,12 +58,12 @@ function setup()
 	continue
      fi
 
-     if [ -z $TASK_DOWNLOAD_YOUTUBE_DL_FMT ]; then
-        echo $line | grep -qE "^#.*:"
-        if [ $? -eq 0 ] && [ "$line" != "" ]; then
-           FMT=$(echo $line | awk -F ":" '{print $2}')"_$FMT"
-	fi
-     fi
+#     if [ -z $TASK_DOWNLOAD_YOUTUBE_DL_FMT ]; then
+#        echo $line | grep -qE "^#.*:"
+#        if [ $? -eq 0 ] && [ "$line" != "" ]; then
+#           FMT=$(echo $line | awk -F ":" '{print $2}')"_$FMT"
+#	fi
+#     fi
 
      echo $line | grep -qvE "^[#|=|-]"
      if [ $? -eq 0 ] && [ "$line" != "" ]; then
@@ -83,21 +83,59 @@ function use()
   case "$1" in
     "you-get")
        YOU_GET_OPTION="$TASK_DOWNLOAD_OPTION $YOU_GET_OPTION"
-       comm="$TOOLS/bin/you-get -I $URL_LIST -o $OUTPUT_DIR -a $YOU_GET_OPTION"
+       base_download you-get
+       #comm="$TOOLS/bin/you-get -I $URL_LIST -o $OUTPUT_DIR -a $YOU_GET_OPTION"
     ;;
     "youtube-dl")
-       YOUTUBE_DL_OPTION="$TASK_DOWNLOAD_OPTION $YOUTUBE_DL_OPTION"
-       comm="$TOOLS/bin/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/$FMT $YOUTUBE_DL_OPTION"
+        YOUTUBE_DL_OPTION="$TASK_DOWNLOAD_OPTION $YOUTUBE_DL_OPTION"
+        base_download youtube-dl
+        #comm="$TOOLS/bin/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/$FMT $YOUTUBE_DL_OPTION"
     ;;
     *)
        echo "Download for nothing. Try to export TASK_DOWNLOAD_USE=you-get or TASK_DOWNLOAD_USE=youtube-dl"
        exit 1
     ;;
   esac
-  if [ "$comm" != "" ]; then
-     echo $comm && $comm
-  fi
   rm -rf "$URL_LIST"
+}
+
+function base_download()
+{
+   if [ $# -eq 1 ]; then
+    local flag="$1"
+    local i=0
+    while read line; do
+       local name="$(echo "$line" | awk -F "*" '{print $2}')"
+       local url="$(echo "$line" | awk -F "*" '{print $1}')"
+       local comm=""
+       echo "download... $i"
+       echo "name: $name"
+       echo "url: $url"
+       case "$flag" in
+	  "you-get")
+             local opt="-o $OUTPUT_DIR"
+             if [ "$name" != "" ]; then
+	        opt="-O $OUTPUT_DIR/$name"
+             fi
+             comm="$TOOLS/bin/you-get -a $YOU_GET_OPTION $opt $url"
+	  ;;
+          "youtube-dl")
+             local opt="-o $OUTPUT_DIR/$FMT"
+             if [ "$name" != "" ]; then
+	        opt="-o \"$OUTPUT_DIR/$name.%(ext)s\""
+             fi
+             comm="$TOOLS/bin/youtube-dl $YOUTUBE_DL_OPTION $opt $url"
+	   ;;
+       esac
+       if [ "$comm" != "" ]; then
+          echo $comm && $comm
+       else
+          echo "command is null!"
+       fi
+       ((i++))
+       echo ""
+    done < $URL_LIST
+   fi
 }
 
 app $# $*
