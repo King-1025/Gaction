@@ -14,10 +14,12 @@ class Escience:
                  parentRid="11015861"): #代表目录名: video
         self.name = name
         self.password = password
+        self.site="http://ddl.escience.cn"
         self.session = requests.Session()
         self.isLogin = False
         self.zone = zone
         self.parentRid = parentRid  
+        self.data=None
         self.header = {
                        'Host': 'ddl.escience.cn',
                        'Connection': 'keep-alive',
@@ -46,7 +48,7 @@ class Escience:
             self.session.post(url=r_location, headers=self.header,verify=False,allow_redirects=False)
             self.isLogin = True
  #           print('redirect url:%s' % r_location)
-            print("auth success!\n")
+ #           print("auth success!\n")
         except:
             print("auth failed!\n")
             sys.exit(1)
@@ -65,44 +67,93 @@ class Escience:
             print("login_pages response nO!")
             sys.exit(1)
         else:
-            print('login_page response oK!')
+    #        print('login_page response oK!')
             self.auth()
 
-    def query(self, path):
-        url = "http://ddl.escience.cn/king1025/list?func=query"
+    def base_query(self, path):
+        url = "%s/%s/list?func=query" % (self.site, self.zone)
         data = {
                "path" : path,
                "tokenKey" : "1575527996343", # the key can be empty!
             }
         r = self.session.post(url=url, headers=self.header, data=data)
         if r.status_code == 200:
-           return json.loads(r.text)
-        else:
-           return None
+           self.data=json.loads(r.text)
+        return self
 
-    def getRid(self, path):
-        rid = None
-        if path is not None:
-          lp = len(path)
-          if lp > 0:
-            if "/" == path[0]:
-               pass
-            elif "." == path[0]:
-               pass
-            else:
-               pass 
-        return rid
-            
+    def query(self):
+        return self.base_query(self.parentRid)
+
+    def format(self):
+        data=self.data
+        if data is not None:
+           i=0
+           print("details:\n")
+           for ch in data["children"]:
+               print("  - id: %d" % i)
+               print("    name: %s" % ch["fileName"])
+               print("    size: %s" % ch["size"])
+               print("    time: %s" % ch["createTime"])
+               print("    rid: %s"  % str(ch["rid"]))
+               print("")
+               i+=1
+           print("total: %d\n" % i)
+        else:
+           print("data is null!")
+
+    def download(self, name, rid):
+        path=None
+        url = "%s/%s/downloadResource/%s" % (self.site, self.zone, str(rid))
+        from contextlib import closing
+        print("fetch %s" % url)
+        print(name)
+        with closing(self.session.get(url,headers=self.header,stream=True)) as response:
+             if name is None:
+               import re
+               line=response.headers['Content-Disposition']
+               matchObj = re.search( r'.*filename="(.*)"', line, re.M|re.I)
+               if matchObj:
+                  path=matchObj.group(1)
+               else:
+                  print("No match!!")
+                  sys.exit(0)
+             else:
+                path=name
+
+             chunk_size = 1024  # 单次请求最大值
+             content_size = int(response.headers['content-length'])
+#             print((response.headers))
+             data_count = 0
+             with open(path, "wb") as file:
+                for data in response.iter_content(chunk_size=chunk_size):
+                    file.write(data)
+                    data_count = data_count + len(data)
+                    now_jd = (data_count / content_size) * 100
+                    print("\r%s：%d%% (%s/%s) " % (path, now_jd,
+                      self.bytes2human(data_count), 
+                      self.bytes2human(content_size)), end=" ")
+             print("\n")
+
+    def bytes2human(self, n):
+        symbols = ('K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y')
+        prefix = {}
+        for i, s in enumerate(symbols):
+            prefix[s] = 1 << (i + 1) * 10
+        for s in reversed(symbols):
+            if n >= prefix[s]:
+               value = float(n) / prefix[s]
+               return '%.1f%s' % (value,s)
+        return '%sB' % n
+
     def delete(self, path):
         pass
 
     def upload(self,path,name):
         qname = urllib.request.quote(name)
         #parentRid 上传目录位置 0:根目录
-        url = 'http://ddl.escience.cn/%s/upload?func=uploadFiles&parentRid=%s&qqfile=%s' % (self.zone,self.parentRid,qname)
+        url = '%s/%s/upload?func=uploadFiles&parentRid=%s&qqfile=%s' %(self.site, self.zone,self.parentRid,qname)
         data = open(os.path.join(path,name),'rb')
         header = {
-
                        'Host': 'ddl.escience.cn',
                        'Connection': 'keep-alive',
                        'Origin': 'http://ddl.escience.cn',
@@ -124,26 +175,31 @@ class Escience:
             sys.exit(1)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
-       print("it needs 3 arguments!")
+    argc=len(sys.argv)
+    if argc <= 3:
+       print("it needs 3 arguments at least!")
        sys.exit(1)
-#    else:
-#       sys.exit(0)
+
     esc = Escience(str(sys.argv[1]),str(sys.argv[2]))
     esc.login()
+
     if esc.isLogin == True:
-
-        if 1 == 1:
-           print(esc.query(str(sys.argv[3])))
-           sys.exit(0)
-
-        work_dir = str(sys.argv[3])
-        for parent, dirnames, filenames in os.walk(work_dir,  followlinks=True):
-          for filename in filenames:
+       action=str(sys.argv[3])
+       if action == "list":
+          esc.query().format()
+       elif action == "download":
+          print(argc)
+          if argc > 4:
+             esc.download(None, str(sys.argv[4]))
+          elif argc > 5:
+             esc.download(str(sys.argv[5]), str(sys.argv[4]))
+       elif action == "upload" and argc > 4: 
+          work_dir = str(sys.argv[4])
+          for parent, dirnames, filenames in os.walk(work_dir,  followlinks=True):
+           for filename in filenames:
              file_path = os.path.join(parent, filename)
              print('file：%s' % filename)
              print('path：%s' % file_path)
              print('upload...')
              esc.upload(parent,filename)
              print('')
-#    esc.upload(sys.argv[1],sys.argv[2])

@@ -105,7 +105,7 @@ function use()
     ;;
   esac
   ls -lh $OUTPUT_DIR
-  rm -rf "$URL_LIST"
+  #rm -rf "$URL_LIST"
 }
 
 function base_download()
