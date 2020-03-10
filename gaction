@@ -22,18 +22,36 @@ function app()
       "adc") shift; add_command $*;;
       "config") shift; config $*;;
       "aup") shift; auto_push $*;;
+      "faup") shift; force_auto_push $*;;
       *) echo error command! $1; exit 1;;
     esac
   fi
 }
 
-function auto_push()
+function base_auto_push()
 {
    local msg="$1"
+   local tag="$2"
+   local flag="$3"
    if [ "$msg" == "" ]; then
-      msg="$(date "+%Y-%m-%d %H:%M:%S") update by aup"
+      msg="$(date "+%Y-%m-%d %H:%M:%S") update by $tag"
    fi
-   git add $ROOT && git commit -m "$msg" && upss -dt push
+   if [ "$flag" == "force" ]; then
+      flag="--allow-empty"
+   else
+      flag=""
+   fi
+   git add $ROOT && git commit $flag -m "$msg" && upss -dt push
+}
+
+function auto_push()
+{
+   base_auto_push "$*" "aup"
+}
+
+function force_auto_push()
+{
+   base_auto_push "$*" "faup" "force"
 }
 
 function add_command()

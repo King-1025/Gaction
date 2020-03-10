@@ -17,7 +17,7 @@ FMT="%(id)s.%(ext)s"
 function app()
 {
 #   set -x
-   setup #&& use "$TASK_DOWNLOAD_USE"
+   setup && use "$TASK_DOWNLOAD_USE"
 #   set +x
 }
 
