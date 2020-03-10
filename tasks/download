@@ -82,9 +82,9 @@ function use()
   local comm=""
   case "$1" in
     "you-get")
-       YOU_GET_OPTION="$TASK_DOWNLOAD_OPTION $YOU_GET_OPTION"
-       base_download you-get
-       #comm="$TOOLS/bin/you-get -I $URL_LIST -o $OUTPUT_DIR -a $YOU_GET_OPTION"
+        YOU_GET_OPTION="$TASK_DOWNLOAD_OPTION $YOU_GET_OPTION"
+        base_download you-get
+        #comm="$TOOLS/bin/you-get -I $URL_LIST -o $OUTPUT_DIR -a $YOU_GET_OPTION"
     ;;
     "youtube-dl")
         YOUTUBE_DL_OPTION="$TASK_DOWNLOAD_OPTION $YOUTUBE_DL_OPTION"
@@ -92,10 +92,11 @@ function use()
         #comm="$TOOLS/bin/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/$FMT $YOUTUBE_DL_OPTION"
     ;;
     *)
-       echo "Download for nothing. Try to export TASK_DOWNLOAD_USE=you-get or TASK_DOWNLOAD_USE=youtube-dl"
-       exit 1
+        echo "Download for nothing. Try to export TASK_DOWNLOAD_USE=you-get or TASK_DOWNLOAD_USE=youtube-dl"
+        exit 1
     ;;
   esac
+  ls $OUTPUT_DIR
   rm -rf "$URL_LIST"
 }
 
@@ -128,7 +129,7 @@ function base_download()
 	   ;;
        esac
        if [ "$comm" != "" ]; then
-          echo $comm && $comm
+          echo "run: $comm" && $comm && echo ""
        else
           echo "command is null!"
        fi
