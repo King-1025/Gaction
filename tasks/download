@@ -39,7 +39,7 @@ function glive()
   if [ $# -eq 2 ]; then
     local tmp=$(mktemp -u)
     local comm="$TOOLS/bin/gff range $@"
-    echo "$comm" && $comm > $tmp
+    echo "$comm" && $comm | tee -a $tmp
     if [ -e $tmp ]; then
        comm="$TOOLS/bin/gff-fmt $tmp $URL_LIST"
        echo "$comm" && $comm

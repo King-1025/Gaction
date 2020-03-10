@@ -29,16 +29,17 @@ function app()
 
 function auto_push()
 {
-   local msg=$1
-   if [ "$msg" = "" ]; then
+   local msg="$1"
+   if [ "$msg" == "" ]; then
       msg="$(date "+%Y-%m-%d %H:%M:%S") update by aup"
    fi
-   git add $ROOT && git commit -m "$1" && upss -dt push
+   git add $ROOT && git commit -m "$msg" && upss -dt push
 }
 
 function add_command()
 {
    if [ $# -gt 0 ]; then
+      echo "add command..."
       echo "\$ $@" | tee $ROOT/README.md
       auto_push "add_command $@"
    else
