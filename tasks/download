@@ -110,8 +110,9 @@ function base_download()
        local name="$(echo "$line" | awk '{print $2}')"
        local url="$(echo "$line" | awk '{print $1}')"
        local comm=""
+       echo "downloading... $i"
        echo "$name"
-       echo "$i:fetch $url..."
+       echo "$url"
        echo "==============================================="
        case "$flag" in
 	  "you-get")
