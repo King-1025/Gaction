@@ -149,9 +149,9 @@ function create_task()
    declare -a list=($*)
    local tmp=$(mktemp -u)
    for((i=0; i < ${#list[@]}; i++)); do
-     echo "# NEW_$i"| tee $tmp
+     echo "# video: $i"| tee $tmp
      echo "---"  | tee -a $tmp
-     echo "${list[i]}" | tee -a $tmp
+     echo "${list[i]} video_$i" | tee -a $tmp
    done
    if [ -e $tmp ]; then
      mv $tmp $ROOT/README.md

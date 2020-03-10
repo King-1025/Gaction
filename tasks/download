@@ -105,8 +105,8 @@ function base_download()
     local flag="$1"
     local i=0
     while read line; do
-       local name="$(echo "$line" | awk -F "*" '{print $2}')"
-       local url="$(echo "$line" | awk -F "*" '{print $1}')"
+       local name="$(echo "$line" | awk '{print $2}')"
+       local url="$(echo "$line" | awk '{print $1}')"
        local comm=""
        echo "download... $i"
        echo "name: $name"

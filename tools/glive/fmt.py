@@ -20,9 +20,8 @@ if __name__ == "__main__":
      data = yaml.load(f,  Loader=yaml.FullLoader)
      with open(ouf, "a+") as o:
        for video in data["details"]:
-
            name="glive_%s-%d" % (video["publish"], video["video"])
            for src in video["qualities"]:
                print("name: %s\nurl: %s\n" % (name, src["url"]))
-               o.write("%s*%s\n" % (src["url"], name))
+               o.write("%s %s\n" % (src["url"], name))
                break
