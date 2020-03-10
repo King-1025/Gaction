@@ -23,6 +23,6 @@ if __name__ == "__main__":
            name="glive_%s-%d" % (video["publish"], video["video"])
            for src in video["qualities"]:
                print("name: %s\nurl: %s\n" % (name, src["url"]))
-               #o.write("%s %s\n" % (src["url"], name))
-               o.write("%s\n" % (src["url"]))
+               o.write("%s %s\n" % (src["url"], name))
+               #o.write("%s\n" % (src["url"]))
                break

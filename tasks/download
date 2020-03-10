@@ -124,7 +124,7 @@ function base_download()
           "youtube-dl")
              local opt="-o $OUTPUT_DIR/$FMT"
              if [ "$name" != "" ]; then
-	        opt="-o \"$OUTPUT_DIR/$name.%(ext)s\""
+	        opt="-o $OUTPUT_DIR/${name}.%(ext)s"
              fi
              comm="$TOOLS/bin/youtube-dl $YOUTUBE_DL_OPTION $opt $url"
 	   ;;
