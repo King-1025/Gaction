@@ -110,9 +110,9 @@ function base_download()
        local name="$(echo "$line" | awk '{print $2}')"
        local url="$(echo "$line" | awk '{print $1}')"
        local comm=""
-       echo "download... $i"
-       echo "name: $name"
-       echo "url: $url"
+       echo "$name"
+       echo "$i:fetch $url..."
+       echo "==============================================="
        case "$flag" in
 	  "you-get")
              local opt="-o $OUTPUT_DIR"
@@ -130,7 +130,9 @@ function base_download()
 	   ;;
        esac
        if [ "$comm" != "" ]; then
-          echo -e "run: $comm\n" && $comm && echo "finished! $i"
+          echo -e "$comm\n"
+	  $comm
+	  echo "finished! $i"
        else
           echo "command is null!"
        fi
