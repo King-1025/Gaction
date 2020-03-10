@@ -96,7 +96,7 @@ function use()
         exit 1
     ;;
   esac
-  ls $OUTPUT_DIR
+  ls -lh $OUTPUT_DIR
   rm -rf "$URL_LIST"
 }
 
