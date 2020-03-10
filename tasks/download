@@ -30,6 +30,8 @@ function run_command()
       case "$exe" in
         "glive") glive "$@";;
 	"wg") glive 0 1;;
+	"test") echo "nothing to be done!";;
+	*) echo "Not found command $exe!"; exit 1;;
       esac
    fi
 }
@@ -78,7 +80,11 @@ function setup()
 }
 
 function use()
-{
+{ 
+  if [ ! -e $URL_LIST ]; then
+     echo "not exist! $URL_LIST"
+     exit 1
+  fi
   local comm=""
   case "$1" in
     "you-get")
@@ -102,7 +108,7 @@ function use()
 
 function base_download()
 {
-   if [ $# -eq 1 ]; then
+   if [ $# -eq 1 ] && [ -e $URL_LIST ]; then
     local flag="$1"
     local i=0
     mkdir -p $OUTPUT_DIR
