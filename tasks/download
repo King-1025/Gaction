@@ -43,6 +43,7 @@ function glive()
     local tmp=$(mktemp -u)
     local comm="$TOOLS/bin/gff range $@"
     echo "$comm" && $comm | tee -a $tmp
+    echo ""
     if [ -e $tmp ]; then
        comm="$TOOLS/bin/gff-fmt $tmp $URL_LIST"
        echo "$comm" && $comm
@@ -114,7 +115,7 @@ function base_download()
     local i=0
     mkdir -p $OUTPUT_DIR
     while read line; do
-       local name="$(echo "$line" | awk '{print $2}')"
+       local name="$(echo "$line" | awk '{print $2}' | sed "s/:/./g")"
        local url="$(echo "$line" | awk '{print $1}')"
        local comm=""
        echo "downloading... $i"

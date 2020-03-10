@@ -134,7 +134,7 @@ if __name__ == '__main__':
     if esc.isLogin == True:
 
         if 1 == 1:
-           esc.query(str(sys.argv[3]))
+           print(esc.query(str(sys.argv[3])))
            sys.exit(0)
 
         work_dir = str(sys.argv[3])
