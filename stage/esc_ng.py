@@ -145,8 +145,31 @@ class Escience:
                return '%.1f%s' % (value,s)
         return '%sB' % n
 
-    def delete(self, path):
+    def rename(self):
+        #http://ddl.escience.cn/king1025/list
+#        post
+#        fileName=test.sh&rid=11271886&parentRid=11015861&func=editFileName
         pass
+
+    def move(self, rid):
+#        http://ddl.escience.cn/king1025/fileManager
+# post
+# func=moveSelected&originalRids=11271886&targetRid=0
+        pass
+
+    def mkdir(self):
+        pass
+# http://ddl.escience.cn/king1025/list
+# post
+#  fileName=1&rid=0&parentRid=0&func=createFolder
+
+    def delete(self, rid):
+        url = "%s/%s/list?func=deleteResource&rid=%s" % (self.site, self.zone, str(rid))
+#       批量删除  http://ddl.escience.cn/king1025/list?func=deleteResources&rids%5B%5D=11271884&rids%5B%5D=11271885
+        r = self.session.get(url=url, headers=self.header)
+        if r.status_code == 200:
+           data=json.loads(r.text)
+           print(data)
 
     def upload(self,path,name):
         qname = urllib.request.quote(name)
@@ -187,6 +210,10 @@ if __name__ == '__main__':
        action=str(sys.argv[3])
        if action == "list":
           esc.query().format()
+       elif action == "json":
+          print(json.dumps(esc.query().data["children"]))
+       elif action == "delete" and argc > 4:
+          esc.delete(str(sys.argv[4]))
        elif action == "download":
           print(argc)
           if argc > 4:
