@@ -101,38 +101,52 @@ class Escience:
         else:
            print("data is null!")
 
-    def download(self, name, rid):
+    def download(self, name, rid, _dir="/sdcard/O_o", _check=True):
         path=None
         url = "%s/%s/downloadResource/%s" % (self.site, self.zone, str(rid))
+        print("name: %s" %name)
+        print("rid: %s\n" %rid)
         from contextlib import closing
-        print("fetch %s" % url)
-        print(name)
+        print("fetch %s ..." % url)
         with closing(self.session.get(url,headers=self.header,stream=True)) as response:
              if name is None:
                import re
                line=response.headers['Content-Disposition']
                matchObj = re.search( r'.*filename="(.*)"', line, re.M|re.I)
                if matchObj:
-                  path=matchObj.group(1)
+                  name=matchObj.group(1)
                else:
                   print("No match!!")
                   sys.exit(0)
              else:
-                path=name
+                #path=name
+                pass
 
              chunk_size = 1024  # 单次请求最大值
              content_size = int(response.headers['content-length'])
 #             print((response.headers))
              data_count = 0
+             path=os.path.join(_dir, name)
+             print("name: %s" %name)
+             print("path: %s" %path)
+             print("")
+             if _check is True:
+                 if os.path.isfile(path):
+                     print("%s exist!" %path)
+                     return path
+             
              with open(path, "wb") as file:
                 for data in response.iter_content(chunk_size=chunk_size):
                     file.write(data)
                     data_count = data_count + len(data)
                     now_jd = (data_count / content_size) * 100
-                    print("\r%s：%d%% (%s/%s) " % (path, now_jd,
+                    #print("\r%s：%d%% (%s/%s) " % (name, now_jd,
+                    print("\rstatus: %3d%% (%6s /%6s) " % (now_jd,
                       self.bytes2human(data_count), 
                       self.bytes2human(content_size)), end=" ")
-             print("\n")
+
+             print("\n\n%s" % path)
+             return path
 
     def bytes2human(self, n):
         symbols = ('K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y')
@@ -197,8 +211,18 @@ class Escience:
             print("upload failed!")
             sys.exit(1)
 
+def exec_view_command(path):
+#    print("Call exec_view_command()!")
+    if path is not None and os.path.isfile(path):
+       comm="android view -f %s" % path
+       print(comm)
+       os.system(comm)
+    else:
+       print("%s not exist!" % path)
+
 if __name__ == '__main__':
     argc=len(sys.argv)
+    print("argc: %s" %argc)
     if argc <= 3:
        print("it needs 3 arguments at least!")
        sys.exit(1)
@@ -215,11 +239,21 @@ if __name__ == '__main__':
        elif action == "delete" and argc > 4:
           esc.delete(str(sys.argv[4]))
        elif action == "download":
-          print(argc)
-          if argc > 4:
-             esc.download(None, str(sys.argv[4]))
-          elif argc > 5:
-             esc.download(str(sys.argv[5]), str(sys.argv[4]))
+          if argc == 5:
+             esc.download(None, str(sys.argv[4]), _check=False)
+          elif argc >= 6:
+             esc.download(str(sys.argv[5]), str(sys.argv[4]), _check=False)
+
+       elif action == "view":
+          path=None
+          if argc == 5:
+             path=esc.download(None, str(sys.argv[4]))
+          elif argc >= 6:
+             path=esc.download(str(sys.argv[5]), str(sys.argv[4]))
+
+          print("")
+          exec_view_command(path)
+
        elif action == "upload" and argc > 4: 
           work_dir = str(sys.argv[4])
           for parent, dirnames, filenames in os.walk(work_dir,  followlinks=True):
