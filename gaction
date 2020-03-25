@@ -23,6 +23,10 @@ function app()
       "config") shift; config $*;;
       "aup") shift; auto_push $*;;
       "faup") shift; force_auto_push $*;;
+      "ls") ./stage/test list;;
+      "rm") shift; ./stage/test delete $*;;
+      "dl") shift; ./stage/test download $*;;
+      "up") shift; ./stage/test upload $*;;
       *) echo error command! $1; exit 1;;
     esac
   fi
