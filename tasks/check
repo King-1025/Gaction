@@ -13,6 +13,7 @@ function use()
   case "$1" in
      "base") check ffmpeg requests;;
      "glive") check ffmpeg requests yaml;;
+     "curl") check curl;;
      *) echo "Check for nothing. Try to export TASK_CHECK_USE=base"; exit 1;;
   esac
 }
@@ -20,17 +21,18 @@ function use()
 function check()
 { 
   for i in "$@"; do
+     echo "Checking $i...";
      case "$i" in
+	"curl") 
+		source $CHECK_DIR/curl.sh && check_curl;
+	;;
 	"ffmpeg")
-		echo "Checking ffmpeg...";
 		source $CHECK_DIR/ffmpeg.sh && check_ffmpeg;
 	;;
 	"requests")
-		echo "Checking requests...";
                 source $CHECK_DIR/requests.sh && check_requests;
 	;;
 	"yaml")
-		echo "Checking yaml...";
                 source $CHECK_DIR/yaml.sh && check_yaml;
 	;;
 	*)

@@ -25,7 +25,8 @@ function app()
       "faup") shift; force_auto_push $*;;
       "g") shift; git $*;;
       "c") shift; $*;;
-      "cat") cat $ROOT/README.md;;
+      "w") android view https://github.com/King-1025/Gaction.git;;
+      "r") cat $ROOT/README.md;;
       "ls") $ROOT/stage/test list;;
       "rm") shift; $ROOT/stage/test delete $*;;
       "dl") shift; $ROOT/stage/test download $*;;

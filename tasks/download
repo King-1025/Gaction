@@ -11,6 +11,7 @@ OUTPUT_DIR=$ROOT/video
 #YOU_GET_OPTION=
 #YOUTUBE_DL_OPTION="-f bestvideo+bestaudio" #--merge-output-format mp4"
 #YOUTUBE_DL_OPTION="--merge-output-format mp4"
+CURL_OPTION="-sL"
 
 FMT="%(id)s.%(ext)s"
 
@@ -99,6 +100,10 @@ function use()
         base_download youtube-dl
         #comm="$TOOLS/bin/youtube-dl -a $URL_LIST -o $OUTPUT_DIR/$FMT $YOUTUBE_DL_OPTION"
     ;;
+    "curl")
+        CURL_OPTION="$TASK_DOWNLOAD_OPTION $CURL_OPTION"
+        base_download curl
+    ;;
     *)
         echo "Download for nothing. Try to export TASK_DOWNLOAD_USE=you-get or TASK_DOWNLOAD_USE=youtube-dl"
         exit 1
@@ -137,10 +142,19 @@ function base_download()
              fi
              comm="$TOOLS/bin/youtube-dl $YOUTUBE_DL_OPTION $opt $url"
 	   ;;
+           "curl")
+             local opt="-O"
+             if [ "$name" != "" ]; then
+	        opt="-o ${name}"
+             fi
+             comm="cd $OUTPUT_DIR && curl $CURL_OPTION $opt $url"
+	   ;;
        esac
        if [ "$comm" != "" ]; then
           echo -e "$comm\n"
-	  $comm
+	  if [ -z $TEST_FLAG ]; then
+	     $comm
+	  fi
 	  echo "finished! $i"
        else
           echo "command is null!"
