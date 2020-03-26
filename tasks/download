@@ -11,7 +11,7 @@ OUTPUT_DIR=$ROOT/video
 #YOU_GET_OPTION=
 #YOUTUBE_DL_OPTION="-f bestvideo+bestaudio" #--merge-output-format mp4"
 #YOUTUBE_DL_OPTION="--merge-output-format mp4"
-CURL_OPTION="-sL"
+#CURL_OPTION="-sL"
 
 FMT="%(id)s.%(ext)s"
 
@@ -152,8 +152,8 @@ function base_download()
        esac
        if [ "$comm" != "" ]; then
           echo -e "$comm\n"
-	  if [ -z $TEST_FLAG ]; then
-	     $comm
+	  if [ $TEST_FLAG -ne 1 ]; then
+	     eval $comm
 	  fi
 	  echo "finished! $i"
        else

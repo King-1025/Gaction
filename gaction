@@ -145,10 +145,10 @@ function run_task()
 
 function add_task()
 {
-   if [ $# -eq 2 ]; then
+   if [ $# -ge 2 ]; then
       echo "# $1" | tee    $ROOT/README.md
       echo "---"  | tee -a $ROOT/README.md
-      echo $2     | tee -a $ROOT/README.md
+      echo $2 $3  | tee -a $ROOT/README.md
       auto_push "$1"
    fi
 }

@@ -13,7 +13,7 @@ function use()
   case "$1" in
      "base") check ffmpeg requests;;
      "glive") check ffmpeg requests yaml;;
-     "curl") check curl;;
+     "curl") check curl requests;;
      *) echo "Check for nothing. Try to export TASK_CHECK_USE=base"; exit 1;;
   esac
 }
