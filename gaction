@@ -23,6 +23,8 @@ function app()
       "config") shift; config $*;;
       "aup") shift; auto_push $*;;
       "faup") shift; force_auto_push $*;;
+      "g") shift; git $*;;
+      "c") shift; $*;;
       "cat") cat $ROOT/README.md;;
       "ls") $ROOT/stage/test list;;
       "rm") shift; $ROOT/stage/test delete $*;;
