@@ -4,7 +4,7 @@ function apt_check()
 {
   local list=""
   for i in "$@"; do
-     echo "> apt checking $i ..."
+     echo "> apt check $i ..."
      which $i
      if [ $? -eq 1 ]; then
 	list="$i $list"
