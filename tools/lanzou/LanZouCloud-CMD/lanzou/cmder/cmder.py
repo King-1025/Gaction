@@ -313,13 +313,15 @@ class Commander:
             return None
 
         try:
+            _show_progress=None
             if os.path.isdir(path):
                 info(f'批量上传文件: {path}')
-                self._disk.upload_dir(path, self._work_id, callback=show_progress, failed_callback=show_upload_failed)
+                self._disk.upload_dir(path, self._work_id, callback=_show_progress, failed_callback=show_upload_failed)
                 self.refresh()
             else:
-                self._disk.upload_file(path, self._work_id, callback=show_progress)
+                self._disk.upload_file(path, self._work_id, callback=_show_progress)
                 self.refresh()
+            print("upload ok!\n")
         except KeyboardInterrupt:
             print('')
             info("上传已终止")
