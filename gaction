@@ -24,6 +24,9 @@ function app()
       "aup") shift; auto_push $*;;
       "faup") shift; force_auto_push $*;;
       "g") shift; git $*;;
+      "gvs") git status;;
+      "gd") git diff;;
+      "glog"|"gl") git log --oneline --decorate --graph;;
       "c") shift; $*;;
       "w") android view https://github.com/King-1025/Gaction.git;;
       "r") cat $ROOT/README.md;;
