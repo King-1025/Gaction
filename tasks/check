@@ -11,9 +11,12 @@ function app()
 function use()
 {
   case "$1" in
-     "base") check ffmpeg requests;;
-     "glive") check ffmpeg requests yaml;;
-     "curl") check curl requests;;
+     "base")   check ffmpeg requests;;
+     "glive")  check ffmpeg requests yaml;;
+     "curl")   check curl requests;;
+     "wget")   check wget requests;;
+     "axel")   check axel requests;;
+     "aria2c") check aria2c requests;;
      *) echo "Check for nothing. Try to export TASK_CHECK_USE=base"; exit 1;;
   esac
 }
@@ -23,6 +26,18 @@ function check()
   for i in "$@"; do
      echo "Checking $i...";
      case "$i" in
+	"aria2c") 
+		source $CHECK_DIR/apt.sh && apt_check aria2c;
+	;;
+	"axel") 
+		source $CHECK_DIR/apt.sh && apt_check axel;
+	;;
+	"wget") 
+		source $CHECK_DIR/apt.sh && apt_check wget;
+	;;
+	"apt_curl") 
+		source $CHECK_DIR/apt.sh && apt_check curl;
+	;;
 	"curl") 
 		source $CHECK_DIR/curl.sh && check_curl;
 	;;

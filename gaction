@@ -74,10 +74,27 @@ function add_command()
    fi
 }
 
+function auto_config()
+{
+   NOT_CLEAR_CONFIG=1
+   echo "# auto config $1" | tee $CONFIG
+   case "$1" in
+      "curl") config -cu curl -du curl -do "-#";; 
+      "wget") config -cu wget -du wget -do "-q";; 
+      "axel") config -cu axel -du axel -do "-q";; 
+      "aria2c") config -cu aria2c -du aria2c;;
+      "glive") config -cu glive -du youtube-dl -do "-q";;
+   esac
+   config -uu esc -nu mail
+}
+
 function config()
 {
-  if [ $# -gt 0 ]; then
+#  set -x
+  if [ -z $NOT_CLEAR_CONFIG ]; then
      rm -rf $CONFIG
+  fi
+  if [ $# -gt 0 ]; then
      declare -a args=("$@")
      local i=0
      while [[ $i < ${#args[@]} ]]; do
@@ -91,12 +108,18 @@ function config()
           "-fm") echo TASK_DOWNLOAD_YOUTUBE_DL_FMT="${args[i+1]}" | tee -a $CONFIG;;
           "-uk") echo TASK_UPLOAD_KEY="${args[i+1]}" | tee -a $CONFIG;;
           "-nk") echo TASK_NOTIFY_KEY="${args[i+1]}" | tee -a $CONFIG;;
+	  "curl") auto_config curl;; 
+	  "wget") auto_config wget;; 
+	  "axel") auto_config axel;; 
+	  "aria2c") auto_config aria2c;; 
+	  "wg"|"glive") auto_config glive;; 
         esac
 	let i+=$s
      done
   else
      gen_default_config
   fi
+# set +x
 }
 
 function gen_default_config()
@@ -109,6 +132,7 @@ function gen_default_config()
    echo "TASK_NOTIFY_USE=mail" | tee -a $CONFIG
    echo "" >> $CONFIG
    echo "# TASK_DOWNLOAD_OPTION=" | tee -a $CONFIG
+   echo "# TASK_DOWNLOAD_FORCE=1" | tee -a $CONFIG
    echo "# TASK_DOWNLOAD_YOUTUBE_DL_FMT=%(id)s.%(ext)s" | tee -a $CONFIG
    echo "# TASK_UPLOAD_KEY=" | tee -a $CONFIG
    echo "# TASK_NOTIFY_KEY=" | tee -a $CONFIG

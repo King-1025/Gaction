@@ -11,7 +11,11 @@ OUTPUT_DIR=$ROOT/video
 #YOU_GET_OPTION=
 #YOUTUBE_DL_OPTION="-f bestvideo+bestaudio" #--merge-output-format mp4"
 #YOUTUBE_DL_OPTION="--merge-output-format mp4"
-#CURL_OPTION="-sL"
+
+CURL_OPTION="-L"
+#WGET_OPTION="-q"
+#AXEL_OPTION="-q"
+#ARIA2C_OPTION=""
 
 FMT="%(id)s.%(ext)s"
 
@@ -104,6 +108,18 @@ function use()
         CURL_OPTION="$TASK_DOWNLOAD_OPTION $CURL_OPTION"
         base_download curl
     ;;
+    "wget")
+        WGET_OPTION="$TASK_DOWNLOAD_OPTION $WGET_OPTION"
+        base_download wget
+    ;;
+    "axel")
+        AXEL_OPTION="$TASK_DOWNLOAD_OPTION $AXEL_OPTION"
+        base_download axel
+    ;;
+    "aria2c")
+        ARIA2C_OPTION="$TASK_DOWNLOAD_OPTION $ARIA2C_OPTION"
+        base_download aria2c
+    ;;
     *)
         echo "Download for nothing. Try to export TASK_DOWNLOAD_USE=you-get or TASK_DOWNLOAD_USE=youtube-dl"
         exit 1
@@ -147,15 +163,50 @@ function base_download()
              if [ "$name" != "" ]; then
 	        opt="-o ${name}"
              fi
+             USE_EVAL=1
              comm="cd $OUTPUT_DIR && curl $CURL_OPTION $opt $url"
+	   ;;
+           "wget")
+             local opt="-P $OUTPUT_DIR"
+             if [ "$name" != "" ]; then
+	        opt="-O $OUTPUT_DIR/${name}"
+             fi
+             comm="wget $WGET_OPTION $opt $url"
+	   ;;
+           "axel")
+             local opt=""
+             if [ "$name" != "" ]; then
+	        opt="-o ${name}"
+             fi
+             USE_EVAL=1
+             comm="cd $OUTPUT_DIR && axel $AXEL_OPTION $opt $url"
+	   ;;
+           "aria2c")
+             local opt="-d $OUTPUT_DIR"
+             if [ "$name" != "" ]; then
+	        opt="-d $OUTPUT_DIR -o ${name}"
+             fi
+             comm="aria2c $ARIA2C_OPTION $opt $url"
 	   ;;
        esac
        if [ "$comm" != "" ]; then
           echo -e "$comm\n"
-	  if [ $TEST_FLAG -ne 1 ]; then
-	     eval $comm
+	  if [ -z $TEST_FLAG ]; then
+	     if [ ! -z $USE_EVAL ]; then
+	        eval $comm
+             else
+		$comm
+	     fi
+	     if [ $? -eq 0 ]; then
+	       printf "\e[1;6;32m%s\e[m\n" "finished! $i"
+	     else
+		if [ ! -z $TASK_DOWNLOAD_FORCE ]; then
+	           printf "\e[1;6;35m%s\e[m\n" "failed! but use TASK_DOWNLOAD_FORCE to continue $i"
+                else
+    		   printf "\e[1;6;31m%s\e[m\n" "error! $i" && exit 1
+		fi
+	     fi
 	  fi
-	  echo "finished! $i"
        else
           echo "command is null!"
        fi
