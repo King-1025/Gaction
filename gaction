@@ -32,6 +32,8 @@ function app()
       "dl") shift; $ROOT/stage/test download $*;;
       "av") shift; $ROOT/stage/test view $*;;
       "up") shift; $ROOT/stage/test upload $*;;
+      "lz") shift; $ROOT/tools/bin/lanz;;
+      "lzz") shift; $ROOT/tools/bin/lanz once 0 0 $*;;
       *) echo error command! $1; exit 1;;
     esac
   fi

@@ -154,8 +154,11 @@ def let_me_upload(file_path):
     big_file_suffix = choice(['zip', 'rar', 'apk', 'exe', 'pdf', '7z', 'tar', 'iso', 'img', 'gho', 'dmg', 'dwg'])
     small_file_suffix = choice(['doc', 'ipa', 'epub', 'mobi', 'azw', 'ppt', 'pptx'])
     suffix = small_file_suffix if file_size < 30 else big_file_suffix
-    new_file_path = '.'.join(file_path.split('.')[:-1]) + '.' + suffix
+#    new_file_path = '.'.join(file_path.split('.')[:-1]) + '.' + suffix
+    new_file_path = file_path + '.' + suffix
 
+    print("file_path: %s" %file_path)
+    print("new_file_path: %s" %new_file_path)
     with open(new_file_path, 'wb') as out_f:
         # 写入原始文件数据
         with open(file_path, 'rb') as in_f:

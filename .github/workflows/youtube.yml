@@ -30,6 +30,7 @@ jobs:
         env:
           ESC_KEY: ${{ secrets.ESC_KEY }}
           BAIDU_KEY: ${{ secrets.BAIDU_KEY }}
+          LANZOU_KEY: ${{ secrets.LANZOU_KEY }}
 
       - name: 发送通知
         run: ./gaction notify
