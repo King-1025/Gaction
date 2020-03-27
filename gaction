@@ -18,7 +18,7 @@ function app()
       "notify") run_task notify;;
       "run") shift; run_task $*;;
       "new") shift; create_task $*;;
-      "add") shift; add_task "$@";;
+      "add") shift; add_task $*;;
       "adc") shift; add_command $*;;
       "config") shift; config $*;;
       "aup") shift; auto_push $*;;

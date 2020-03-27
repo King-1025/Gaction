@@ -1,3 +1,3 @@
-# torrent
+# torrent_test
 ---
-test stage/bt/test.torrent
+stage/bt/test.torrent
