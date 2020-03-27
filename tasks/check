@@ -54,7 +54,6 @@ function check()
 		echo "Check error! Not found $i"
 	;;
      esac
-     echo ""
   done
 }
 

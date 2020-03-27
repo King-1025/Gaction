@@ -3,7 +3,7 @@
 # 检查安装ffmpeg
 function check_ffmpeg()
 { 
-   source apt.sh && apt_check ffmpeg
+   source $CHECK_DIR/apt.sh && apt_check ffmpeg
 }
 
 #check_ffmpeg
