@@ -111,5 +111,5 @@ if __name__ == '__main__':
              print('path：%s' % file_path)
              print('upload...')
              esc.upload(parent,filename)
-             print('')
+             #print('')
 #    esc.upload(sys.argv[1],sys.argv[2])
