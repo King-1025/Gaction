@@ -14,6 +14,7 @@ function app()
     case "$1" in
       "check") run_task check;;
       "download") run_task download;;
+      "split") run_task split;;
       "upload") run_task upload;;
       "notify") run_task notify;;
       "run") shift; run_task $*;;
@@ -30,7 +31,8 @@ function app()
       "c") shift; $*;;
       "w") android view https://github.com/King-1025/Gaction.git;;
       "r") cat $ROOT/README.md;;
-      "ls") $ROOT/stage/test list;;
+      "ls") shift; $ROOT/stage/test list $*;;
+      "rr") shift; $ROOT/stage/test delete_record $*;;
       "rm") shift; $ROOT/stage/test delete $*;;
       "dl") shift; $ROOT/stage/test download $*;;
       "av") shift; $ROOT/stage/test view $*;;
@@ -90,7 +92,7 @@ function auto_config()
       "aria2c") config -cu aria2c -du aria2c;;
       "glive") config -cu glive -du youtube-dl -do "-q";;
    esac
-   config -uu esc -nu mail
+   config -su simple -uu esc -nu mail
 }
 
 function config()
@@ -107,6 +109,7 @@ function config()
         case "${args[i]}" in
           "-cu") echo TASK_CHECK_USE="${args[i+1]}" | tee -a $CONFIG  ;;
           "-du") echo TASK_DOWNLOAD_USE="${args[i+1]}" | tee -a $CONFIG ;;
+          "-su") echo TASK_SPLIT_USE="${args[i+1]}" | tee -a $CONFIG;;
           "-uu") echo TASK_UPLOAD_USE="${args[i+1]}" | tee -a $CONFIG;;
           "-nu") echo TASK_NOTIFY_USE="${args[i+1]}" | tee -a $CONFIG;;
           "-do") echo TASK_DOWNLOAD_OPTION="${args[i+1]}" | tee -a $CONFIG;;
@@ -133,6 +136,7 @@ function gen_default_config()
    echo -e "# NOTICE: This file is auto-gen config for Gaction. You may modify it to match what you want.\n" | tee $CONFIG
    echo "TASK_CHECK_USE=base" | tee -a $CONFIG
    echo "TASK_DOWNLOAD_USE=you-get" | tee -a $CONFIG
+   echo "TASK_SPLIT_USE=skip" | tee -a $CONFIG
    echo "TASK_UPLOAD_USE=esc" | tee -a $CONFIG
    echo "TASK_NOTIFY_USE=mail" | tee -a $CONFIG
    echo "" >> $CONFIG
@@ -157,13 +161,16 @@ function run_task()
       "download")
 	  comm="$(sed -n "/^TASK_DOWNLOAD/p" $CONFIG) $TASK/download $ROOT"
       ;;
+      "split")  
+ 	  comm="$(sed -n "/^TASK_SPLIT/p" $CONFIG) $TASK/split $ROOT"
+      ;;
       "upload")  
  	  comm="$(sed -n "/^TASK_UPLOAD/p" $CONFIG) $TASK/upload $ROOT"
       ;;
       "notify")   
 	  comm="$(sed -n "/^TASK_NOTIFY/p" $CONFIG) $TASK/notify $ROOT"
       ;;
-      *) echo "Usage: $0 run [check|download|upload|notify]"; exit 0;;
+      *) echo "Usage: $0 run [check|download|split|upload|notify]"; exit 0;;
     esac
     if [ "$comm" != "" ]; then
        echo "=> $comm" && eval $comm

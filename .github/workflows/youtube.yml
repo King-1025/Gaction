@@ -24,6 +24,9 @@ jobs:
 
       - name: 获取视频
         run: ./gaction download
+
+      - name: 分割文件
+        run: ./gaction split
  
       - name: 云盘上传
         run: ./gaction upload

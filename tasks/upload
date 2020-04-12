@@ -51,9 +51,9 @@ function esc()
      ESC_KEY=$TASK_UPLOAD_KEY
   fi
    if [ ! -z $ESC_KEY ]; then
-     local exe="$ROOT/tools/bin/esc"
+     local exe="$ROOT/tools/bin/esc_ng"
      local skey="$(echo $ESC_KEY | awk -F "/" '{print $1" "$2}')"
-     local comm="$exe $skey $INPUT"
+     local comm="$exe $skey upload $INPUT"
      #echo $comm && 
      $comm
   else

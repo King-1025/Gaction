@@ -94,6 +94,7 @@ class Escience:
                print("    name: %s" % ch["fileName"])
                print("    size: %s" % ch["size"])
                print("    time: %s" % ch["createTime"])
+               print("    type: %s" % ch["itemType"])
                print("    rid: %s"  % str(ch["rid"]))
                print("")
                i+=1
@@ -171,11 +172,21 @@ class Escience:
 # func=moveSelected&originalRids=11271886&targetRid=0
         pass
 
-    def mkdir(self):
-        pass
-# http://ddl.escience.cn/king1025/list
-# post
-#  fileName=1&rid=0&parentRid=0&func=createFolder
+    def mkdir(self, name):
+        return self.base_mkdir(name, self.parentRid)
+
+    def base_mkdir(self, name, prid):
+        url = "%s/%s/list" % (self.site, self.zone)
+        data = {
+               "fileName" : name,
+               "rid" : "0",
+               "parentRid" : prid,
+               "func" : "createFolder"
+            }
+        r = self.session.post(url=url, headers=self.header, data=data)
+        if r.status_code == 200:
+           self.data=json.loads(r.text)
+        return self
 
     def delete(self, rid):
         url = "%s/%s/list?func=deleteResource&rid=%s" % (self.site, self.zone, str(rid))
@@ -185,10 +196,20 @@ class Escience:
            data=json.loads(r.text)
            print(data)
 
-    def upload(self,path,name):
+    def upload(self, path, name, parentRid=None):
+        prid=parentRid
+        if prid is None:
+           prid=self.parentRid
+        print("prid: %s" % prid)
+        print('file：%s' % name)
+        print('path：%s' % os.path.join(path, name))
+        print('upload...')
+        return self.base_upload(path, name, prid)
+
+    def base_upload(self, path, name, prid):
         qname = urllib.request.quote(name)
         #parentRid 上传目录位置 0:根目录
-        url = '%s/%s/upload?func=uploadFiles&parentRid=%s&qqfile=%s' %(self.site, self.zone,self.parentRid,qname)
+        url = '%s/%s/upload?func=uploadFiles&parentRid=%s&qqfile=%s' %(self.site, self.zone, prid, qname)
         data = open(os.path.join(path,name),'rb')
         header = {
                        'Host': 'ddl.escience.cn',
@@ -206,10 +227,12 @@ class Escience:
 
         r = self.session.post(url=url, headers=header, data=data)
         if r.status_code == 200:
+            self.data=json.loads(r.text)
             print("upload success!")
         else:
+            self.data=None
             print("upload failed!")
-            sys.exit(1)
+        return self
 
 def exec_view_command(path):
 #    print("Call exec_view_command()!")
@@ -217,6 +240,20 @@ def exec_view_command(path):
        comm="android view -f %s" % path
        print(comm)
        os.system(comm)
+    else:
+       print("%s not exist!" % path)
+
+def exec_fusion_command(path, target):
+    if path is not None and os.path.isfile(path):
+       comm=None
+       if os.path.exists(target) is False:
+          comm="mv %s %s" % (path, target)
+       else:
+          tmp="%s_tmp" % target
+          comm="cat %s %s > %s && mv %s %s" % (target, path, tmp, tmp, target)
+       if comm is not None:
+          print(comm)
+          os.system(comm)
     else:
        print("%s not exist!" % path)
 
@@ -233,11 +270,28 @@ if __name__ == '__main__':
     if esc.isLogin == True:
        action=str(sys.argv[3])
        if action == "list":
-          esc.query().format()
+          if argc > 4:
+            prid=str(sys.argv[4])
+            esc.base_query(prid).format()
+          else:
+            esc.query().format()
        elif action == "json":
           print(json.dumps(esc.query().data["children"]))
+       elif action == "query" and argc > 4:
+          print(json.dumps(esc.base_query(str(sys.argv[4])).data))
        elif action == "delete" and argc > 4:
           esc.delete(str(sys.argv[4]))
+       elif action == "delete_record" and argc > 4:
+          rec=str(sys.argv[4])
+          path=esc.download(None, rec)
+          data=None
+          with open(path, "r") as jf:
+               data=json.loads(jf.read())
+          os.remove(path)
+          esc.delete(rec)
+          esc.delete(data["id"])
+       elif action == "mkdir" and argc > 4:
+          print(json.dumps(esc.mkdir(str(sys.argv[4])).data))
        elif action == "download":
           if argc == 5:
              esc.download(None, str(sys.argv[4]), _check=False)
@@ -252,15 +306,60 @@ if __name__ == '__main__':
              path=esc.download(str(sys.argv[5]), str(sys.argv[4]))
 
           print("")
+          if path.endswith(".record"):
+             data=None
+             with open(path, "r") as jf:
+                data=json.loads(jf.read())
+             os.remove(path)
+             target=os.path.join(os.path.dirname(path), data["name"])
+             if os.path.exists(target):
+                os.remove(target)
+             for r in data["record"]:
+                 path=esc.download(r["part"], r["id"])
+                 print("")
+                 exec_fusion_command(path, target)
+                 if os.path.exists(path):
+                    os.remove(path)
+                 print("")
+             path=target
           exec_view_command(path)
 
        elif action == "upload" and argc > 4: 
           work_dir = str(sys.argv[4])
-          for parent, dirnames, filenames in os.walk(work_dir,  followlinks=True):
-           for filename in filenames:
-             file_path = os.path.join(parent, filename)
-             print('file：%s' % filename)
-             print('path：%s' % file_path)
-             print('upload...')
-             esc.upload(parent,filename)
+          for ff in os.listdir(work_dir):
+             pp = os.path.join(work_dir, ff)
+             if os.path.isdir(pp):
+                print("> upload dir: %s" % ff)
+                # 11327572 part
+                part="11327572"
+                ch_list=esc.base_query(part).data["children"]
+                prid=None
+                for ch in ch_list:
+                  if ff == ch["fileName"]:
+                    if "Folder" == ch["itemType"]:
+                        prid=ch["rid"]
+                        break
+                if prid is None:
+                   prid=esc.base_mkdir(ff, part).data["resource"]["rid"]
+                record=[]
+                count=0
+                for parent, _, files in os.walk(pp, followlinks=True):
+                  for ch_ff in files:
+                     data=esc.upload(parent,ch_ff,prid).data["resource"]
+                     if data is not None:
+                        item={}
+                        item["id"]=str(data["rid"])
+                        item["part"]=data["fileName"]
+                        record.append(item)
+                        count+=1
+                     print('')
+                data=json.dumps({"id":str(prid), "name":ff, "total":count, "record":record})
+                rf="%s.record" % ff
+                with open(os.path.join(pp, rf), "w") as f:
+                     f.write(data)
+                print("> upload record: %s" % rf)
+                esc.upload(pp, rf)
+             else:
+                print("> upload file: %s" % ff)
+                esc.upload(work_dir, ff)
              print('')

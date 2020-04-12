@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+source $(dirname $0)/common.d/check_root.sh
+ROOT=$(check_root $1)
+
+INPUT="$ROOT/video"
+
+function app()
+{
+  if [ -e $INPUT ]; then
+     use "$TASK_SPLIT_USE"
+  else
+     echo $INPUT not exist!
+     exit 1
+  fi
+}
+
+function use()
+{
+    case "$1" in
+	 "skip") echo "skip split Ok!";;
+	 "simple") simple_split;;
+         *) echo "Split for nothing. Try to export TASK_SPLIT_USE=simple"; exit 1;;
+    esac
+}
+
+
+function simple_split()
+{
+   declare -a list=($(find $INPUT -type f -print))
+   local length=${#list[@]}
+   for ((i=0; i<$length; i++)); do
+      echo ""
+      echo "> split $i"
+      local f="${list[i]}"
+      local n="$(basename $f)"
+      local p=0
+      local m=4
+      while [ $p -lt 1 ]||[ $p -gt 10 ]; do
+	  m=$((m*2))
+          p=$(du -B "${m}m" $f | awk '{print $1}')
+      done
+
+      if [ $p -gt 1 ]; then
+         echo "p: $p m: $m f: $f"
+	 local tmpdir=$(mktemp -u)
+	 mkdir -p $tmpdir && cd $tmpdir && split -b "${m}m" -d $f ${n}_part_ --verbose
+	 cd $ROOT
+	 if [ -e $tmpdir ]; then
+	    rm -rf $f && mv $tmpdir $f || rm -rf $tmpdir
+	    echo "oK!"
+	 else
+	    echo "failed!"
+	 fi
+      else
+	 echo "size <= ${m}M. skip $f"
+      fi
+   done
+   if [ $length -lt 1 ]; then
+      echo "split empty! $INPUT"
+   fi
+}
+
+app $# $*
