@@ -4,6 +4,7 @@
 import os
 import sys
 import json
+import shutil
 import urllib
 import requests
 
@@ -243,19 +244,13 @@ def exec_view_command(path):
     else:
        print("%s not exist!" % path)
 
-def exec_fusion_command(path, target):
-    if path is not None and os.path.isfile(path):
-       comm=None
-       if os.path.exists(target) is False:
-          comm="mv %s %s" % (path, target)
-       else:
-          tmp="%s_tmp" % target
-          comm="cat %s %s > %s && mv %s %s" % (target, path, tmp, tmp, target)
-       if comm is not None:
-          print(comm)
-          os.system(comm)
+def exec_fusion_command(parts, path):
+    if path is not None and os.path.exists(path) is False:
+       comm="cat %s/* > %s" % (parts, path)
+       print(comm)
+       os.system(comm)
     else:
-       print("%s not exist!" % path)
+       print("%s exist! skip fusion" % path)
 
 if __name__ == '__main__':
     argc=len(sys.argv)
@@ -311,17 +306,19 @@ if __name__ == '__main__':
              with open(path, "r") as jf:
                 data=json.loads(jf.read())
              os.remove(path)
-             target=os.path.join(os.path.dirname(path), data["name"])
-             if os.path.exists(target):
-                os.remove(target)
-             for r in data["record"]:
-                 path=esc.download(r["part"], r["id"])
-                 print("")
-                 exec_fusion_command(path, target)
-                 if os.path.exists(path):
-                    os.remove(path)
-                 print("")
-             path=target
+             if data is not None:
+                bsdir=os.path.dirname(path)
+                parts=os.path.join(bsdir, "%s_parts" % data["name"])
+                shutil.rmtree(parts, ignore_errors=True)
+                os.makedirs(parts)
+                for r in data["record"]:
+                    esc.download(r["part"], r["id"], parts)
+                    print("")
+                path=os.path.join(bsdir, data["name"])
+                exec_fusion_command(parts, path)
+                shutil.rmtree(parts, ignore_errors=True)
+                print("")
+
           exec_view_command(path)
 
        elif action == "upload" and argc > 4: 
