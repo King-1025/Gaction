@@ -1,3 +1,3 @@
-# ggtv
+# whm
 ---
-https://file.gtv1.org/group1/vm3u8/20200411/12/24/5e91b6eefa2c6f052d8cdb6b/hls.0.m3u8 ggtv
+https://d-12.winudf.com/b/APK/Y29tLndoYXRzYXBwXzQ1MzM4Nl80MWNkYjA4NQ?_fn=V2hhdHNBcHAgTWVzc2VuZ2VyX3YyLjIwLjExNV9hcGtwdXJlLmNvbS5hcGs&_p=Y29tLndoYXRzYXBw&ai=-164419642&k=fe390faa9735149dc8b22327916dfa0f5e951f3e&uu=http%3A%2F%2F172.16.56.1%2Fb%2FAPK%2FY29tLndoYXRzYXBwXzQ1MzM4Nl80MWNkYjA4NQ%3Fk%3De0f5009678e3a405e3e09ba63eee63aa5e951f3e whm.apk
