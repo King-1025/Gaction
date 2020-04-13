@@ -12,7 +12,6 @@ import os
 import re
 import sys
 import json
-import shutil
 import urllib
 import requests
 
@@ -69,10 +68,14 @@ class Escience:
         prid=parentRid
         if prid is None:
            prid=self.parentRid
+        loca=os.path.join(path, name)
+        size=os.path.getsize(loca)
+        size=self.bytes2human(size)
         print("prid: %s" % prid)
-        print('file：%s' % name)
-        print('path：%s' % os.path.join(path, name))
-        print('upload...')
+        print("file：%s" % name)
+        print("size：%s" % size)
+        print("path：%s" % loca)
+        print("upload...")
         return self.base_upload(path, name, prid)
 
 # 批量删除  http://ddl.escience.cn/king1025/list?func=deleteResources&rids%5B%5D=11271884&rids%5B%5D=11271885

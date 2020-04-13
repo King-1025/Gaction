@@ -59,6 +59,7 @@ function simple_split()
    if [ $length -lt 1 ]; then
       echo "split empty! $INPUT"
    fi
+   tree -h $INPUT
 }
 
 app $# $*
