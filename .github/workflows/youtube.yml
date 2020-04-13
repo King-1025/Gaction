@@ -27,6 +27,9 @@ jobs:
 
       - name: 分割文件
         run: ./gaction split
+
+      - name: 压缩文件
+        run: ./gaction compress
  
       - name: 云盘上传
         run: ./gaction upload

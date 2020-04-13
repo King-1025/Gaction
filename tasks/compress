@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+source $(dirname $0)/common.d/check_root.sh
+ROOT=$(check_root $1)
+
+INPUT="$ROOT/video"
+
+function app()
+{
+  if [ -e $INPUT ]; then
+     use "$TASK_COMPRESS_USE"
+  else
+     echo $INPUT not exist!
+     exit 1
+  fi
+}
+
+function use()
+{
+    case "$1" in
+	 "skip") echo "skip compress Ok!";;
+	 "7z")  compress 7z;;
+	 "zip") compress zip;;
+	 "tar") compress tar;;
+	 "tgz") compress tgz;;
+	 "tbz") compress tbz;;
+	 "txz") compress txz;;
+         *) echo "Compress for nothing. Try to export TASK_COMPRESS_USE=zip"; exit 1;;
+    esac
+}
+
+function compress()
+{
+ #  set -x
+   if [ $# -ge 1 ]; then
+      local f="$1"
+      local c=0
+      for i in $(find $INPUT -type f -print); do
+	 local d="$(dirname $i)"
+	 local n="$(basename $i)"
+	 echo "> compress file... $c"
+	 echo "flag: $f"
+	 echo "name: $n"
+         echo "path: $d"
+         case "$f" in
+          "7z")
+             7z a "$i.7z" $i && rm -rf $i
+	  ;;
+          "zip") 
+	     zip -j "$i.zip" $i && rm -rf $i
+	  ;;
+          "tar")
+             tar -cvf "$i.tar" -C $d $n && rm -rf $i
+	  ;;
+          "tgz")
+             tar -czvf "$i.tar.gz" -C $d $n && rm -rf $i
+	  ;;
+          "tbz")
+             tar -cjvf "$i.tar.bz2" -C $d $n && rm -rf $i
+	  ;;
+          "txz")
+             tar -cJvf "$i.tar.xz" -C $d $n && rm -rf $i
+	  ;;
+         esac
+         echo -e "oK!\n"
+         let c+=1
+      done
+   fi
+}
+
+app $* $#

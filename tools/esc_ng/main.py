@@ -82,10 +82,21 @@ if __name__ == '__main__':
           exec_view_command(may_download_record(esc, path))
 
        elif action == "upload" and argc > 4: 
-          work_dir = str(sys.argv[4])
-          for ff in os.listdir(work_dir):
-             pp = os.path.join(work_dir, ff)
-             if os.path.isdir(pp):
+          path = str(sys.argv[4])
+          if os.path.exists(path) is False:
+             print("%s not exists!" %path)
+             sys.exit(1)
+          if os.path.isfile(path):
+             print("> upload file: %s" % path)
+             work_dir = os.path.dirname(path)
+             ff = os.path.basename(path)
+             esc.upload(work_dir, ff)
+          elif os.path.isdir(path):
+            work_dir = path
+            print("work_dir: %s" % work_dir)
+            for ff in os.listdir(work_dir):
+              pp = os.path.join(work_dir, ff)
+              if os.path.isdir(pp):
                 print("> upload dir: %s" % ff)
                 part=PART_ID
                 ch_list=esc.base_query(part).data["children"]
@@ -115,7 +126,7 @@ if __name__ == '__main__':
                      f.write(data)
                 print("> upload record: %s" % rf)
                 esc.upload(pp, rf)
-             else:
+              else:
                 print("> upload file: %s" % ff)
                 esc.upload(work_dir, ff)
-             print('')
+              print('')

@@ -15,6 +15,7 @@ function app()
       "check") run_task check;;
       "download") run_task download;;
       "split") run_task split;;
+      "compress") run_task compress;;
       "upload") run_task upload;;
       "notify") run_task notify;;
       "run") shift; run_task $*;;
@@ -30,7 +31,9 @@ function app()
       "glog"|"gl") git log --oneline --decorate --graph;;
       "c") shift; $*;;
       "w") android view https://github.com/King-1025/Gaction.git;;
+      "a") android view https://github.com/King-1025/Gaction/actions;;
       "r") cat $ROOT/README.md;;
+      "cc") cat $ROOT/.config;;
       "tt") shift; $ROOT/stage/test $*;;
       "ls") shift; $ROOT/stage/test list $*;;
       "rr") shift; $ROOT/stage/test delete_record $*;;
@@ -94,7 +97,7 @@ function auto_config()
       "aria2c") config -cu aria2c -du aria2c;;
       "glive") config -cu glive -du youtube-dl -do "-q";;
    esac
-   config -su simple -uu esc -nu mail
+   config -su simple -pu zip -uu esc -nu mail
 }
 
 function config()
@@ -112,6 +115,7 @@ function config()
           "-cu") echo TASK_CHECK_USE="${args[i+1]}" | tee -a $CONFIG  ;;
           "-du") echo TASK_DOWNLOAD_USE="${args[i+1]}" | tee -a $CONFIG ;;
           "-su") echo TASK_SPLIT_USE="${args[i+1]}" | tee -a $CONFIG;;
+          "-pu") echo TASK_COMPRESS_USE="${args[i+1]}" | tee -a $CONFIG;;
           "-uu") echo TASK_UPLOAD_USE="${args[i+1]}" | tee -a $CONFIG;;
           "-nu") echo TASK_NOTIFY_USE="${args[i+1]}" | tee -a $CONFIG;;
           "-do") echo TASK_DOWNLOAD_OPTION="${args[i+1]}" | tee -a $CONFIG;;
@@ -139,6 +143,7 @@ function gen_default_config()
    echo "TASK_CHECK_USE=base" | tee -a $CONFIG
    echo "TASK_DOWNLOAD_USE=you-get" | tee -a $CONFIG
    echo "TASK_SPLIT_USE=skip" | tee -a $CONFIG
+   echo "TASK_COMPRESS_USE=skip" | tee -a $CONFIG
    echo "TASK_UPLOAD_USE=esc" | tee -a $CONFIG
    echo "TASK_NOTIFY_USE=mail" | tee -a $CONFIG
    echo "" >> $CONFIG
@@ -165,6 +170,9 @@ function run_task()
       ;;
       "split")  
  	  comm="$(sed -n "/^TASK_SPLIT/p" $CONFIG) $TASK/split $ROOT"
+      ;;
+      "compress")  
+ 	  comm="$(sed -n "/^TASK_COMPRESS/p" $CONFIG) $TASK/compress $ROOT"
       ;;
       "upload")  
  	  comm="$(sed -n "/^TASK_UPLOAD/p" $CONFIG) $TASK/upload $ROOT"
