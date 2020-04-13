@@ -32,6 +32,7 @@ function app()
       "c") shift; $*;;
       "w") android view https://github.com/King-1025/Gaction.git;;
       "a") android view https://github.com/King-1025/Gaction/actions;;
+      "e") android view "http://ddl.escience.cn/king1025/list#path=%2F11015861";;
       "r") cat $ROOT/README.md;;
       "cc") cat $ROOT/.config;;
       "tt") shift; $ROOT/stage/test $*;;

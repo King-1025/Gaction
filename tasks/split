@@ -31,7 +31,7 @@ function simple_split()
    local length=${#list[@]}
    for ((i=0; i<$length; i++)); do
       echo ""
-      echo "> split $i"
+      printf "\e[1;6;32m%s\e[m\n" "> split $i"
       local f="${list[i]}"
       local n="$(basename $f)"
       local p=0

@@ -38,7 +38,7 @@ function compress()
       for i in $(find $INPUT -type f -print); do
 	 local d="$(dirname $i)"
 	 local n="$(basename $i)"
-	 echo "> compress file... $c"
+	 printf "\e[1;6;32m%s\e[m\n" "> compress file... $c"
 	 echo "flag: $f"
 	 echo "name: $n"
          echo "path: $d"
@@ -65,6 +65,7 @@ function compress()
          echo -e "oK!\n"
          let c+=1
       done
+      tree -h $INPUT
    fi
 }
 
