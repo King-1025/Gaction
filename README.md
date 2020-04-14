@@ -1,3 +1,3 @@
-# gtv_04_11
+# dy
 ---
-https://file.gtv1.org/group1/vm3u8/20200411/12/34/5e91b972fa2c6f052d8ce7e9/hls.0.m3u8 gtv_04_11
+http://cdn.wayada.com/video_user/1p/32/121p324bee52490888b3aa7115c2f4acaae9887826.m3u8 dy

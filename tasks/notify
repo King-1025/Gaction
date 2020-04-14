@@ -50,7 +50,7 @@ cat > $HTML << EOF
 $(if [ -e $URL_LIST ]; then cat $URL_LIST; else echo "Not found URL_LIST: $URL_LIST"; fi)
 
 Result:
-$(if [ $flag -eq 0 ]; then ls -lh $RESULT; else echo "Not found directory: $RESULT"; fi)</pre>
+$(if [ $flag -eq 0 ]; then tree -L 2 -h $RESULT; else echo "Not found directory: $RESULT"; fi)</pre>
   </div>
 </body>
 </html>
