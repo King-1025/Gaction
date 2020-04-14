@@ -141,7 +141,7 @@ if __name__ == '__main__':
                 rf="%s_%s.record" % (ff, size)
                 with open(os.path.join(pp, rf), "w") as f:
                      f.write(data)
-                print("\033[1;6;31m> upload record: %s\033[m" % rf)
+                print("\033[1;6;32m> upload record: %s\033[m" % rf)
                 esc.upload(pp, rf)
               else:
                 print("\033[1;6;33m> upload file: %s\033[m" % ff)
