@@ -52,7 +52,7 @@ def may_decompress_file(path):
 
     if comm is not None:
     #   print(comm)
-       print("> decompress(%s) file: %s" % (flag, path))
+       print("\033[1;6;35m> decompress(%s) %s\033[m" % (flag, path))
        os.system(comm)
        os.remove(path)
 
