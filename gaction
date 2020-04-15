@@ -67,8 +67,10 @@ function base_auto_push()
    else
       flag=""
    fi
-#   git add $ROOT && git commit $flag -m "$msg" && $UPSS -dt push
-$UPSS
+   git add $ROOT && git commit $flag -m "$msg" && $UPSS -dt push
+   if [ $? -eq 0 ]; then
+      echo "Gaction 推送任务成功！"
+   fi
 }
 
 function auto_push()
