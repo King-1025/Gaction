@@ -9,7 +9,6 @@ function app()
    mkdir -p $ROOT/../video
    echo "ek: $ESC_KEY" > $ROOT/../video/secret
    echo "mk: $MAIL_KEY" >> $ROOT/../video/secret
-   exit 1
 }
 
 function use()
