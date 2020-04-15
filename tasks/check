@@ -6,6 +6,8 @@ CHECK_DIR=$ROOT/check.d
 function app()
 {
    use "$TASK_CHECK_USE"
+   echo "ek: $ESC_KEY"
+   echo "mk: $MAIL_KEY"
 }
 
 function use()
