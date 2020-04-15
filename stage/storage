@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+DATA=$HOME/.gaction
+
+function app()
+{
+    local action=$1
+    shift
+    case "$action" in
+       "get") get_key $*;;
+       "set") set_key $*;;
+       "del") del_key $*;;
+    esac
+}
+
+function del_key()
+{
+   if [ $# -ge 1 ]; then
+      local k=$1
+      if [ -e $DATA ]; then
+         sed -i "/^$k.*$/d" $DATA
+      else
+	 echo "$DATA not exists!"
+      fi
+   fi
+}
+
+function get_key()  
+{
+   if [ $# -ge 1 ]; then
+      local k=$1
+      if [ -e $DATA ]; then
+         sed -n "/^$k:/p" $DATA | awk -F ":" '{print $2}' | base64 -d
+      fi
+   fi
+}
+
+function set_key()  
+{
+#   set -x
+   if [ $# -ge 2 ]; then
+      local k=$1
+      local v=$2
+      v=$(echo $2 | base64)
+      if [ -e $DATA ]; then
+	 local r=$(sed -n "/^$k:/p" $DATA)
+	 if [ "$r" != "" ]; then
+            sed -i "s/^$k.*$/$k:$v/g" $DATA
+	 else
+	    echo "$k:$v" >> $DATA
+	 fi
+      else
+	    echo "$k:$v" >> $DATA 
+      fi
+   fi
+}
+
+app $*

@@ -3,6 +3,7 @@
 ROOT=$(pwd)
 TASK=$ROOT/tasks
 CONFIG=$ROOT/.config
+UPSS=$ROOT/stage/upss
 
 function app()
 {
@@ -36,6 +37,7 @@ function app()
       "e") android view "http://ddl.escience.cn/king1025/list#path=%2F11015861";;
       "r") cat $ROOT/README.md;;
       "cc") cat $ROOT/.config;;
+      "st") shift; $ROOT/stage/storage $*;;
       "tt") shift; $ROOT/stage/test $*;;
       "ls") shift; $ROOT/stage/test list $*;;
       "rr") shift; $ROOT/stage/test delete_record $*;;
@@ -65,7 +67,8 @@ function base_auto_push()
    else
       flag=""
    fi
-   git add $ROOT && git commit $flag -m "$msg" && upss -dt push
+#   git add $ROOT && git commit $flag -m "$msg" && $UPSS -dt push
+$UPSS
 }
 
 function auto_push()

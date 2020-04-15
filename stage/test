@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+ROOT=$(pwd)
+STORAGE=$ROOT/stage/storage
+ESC_NG=$ROOT/tools/bin/esc_ng
+
+function app()
+{
+   local key=$($STORAGE get ESC_KEY)
+   if [ "$key" != "" ]; then
+      $ESC_NG $(echo $key | awk -F "/" '{print $1" "$2}') $*
+   else
+      echo "not found ESC_KEY!" 
+      exit 1
+   fi
+}
+
+app $*
