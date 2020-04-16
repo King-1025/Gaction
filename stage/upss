@@ -32,6 +32,7 @@ function auto_push()
     git status
    else
     echo "auto_push only needs 2 arguments!"
+    exit 1
   fi
 }
 
