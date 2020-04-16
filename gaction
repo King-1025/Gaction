@@ -74,6 +74,7 @@ function base_auto_push()
       echo "Gaction推送任务成功，离线下载将在稍后开始，请注意查收邮件！"
    else
       echo "Gaction推送任务失败！"
+      exit 1
    fi
 }
 
