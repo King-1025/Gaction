@@ -4,6 +4,7 @@ ROOT=$(pwd)
 TASK=$ROOT/tasks
 CONFIG=$ROOT/.config
 UPSS=$ROOT/stage/upss
+STORAGE=$ROOT/stage/storage
 
 function app()
 {
@@ -32,9 +33,9 @@ function app()
       "gd") git diff;;
       "glog"|"gl") git log --oneline --decorate --graph;;
       "c") shift; $*;;
-      "w") android view https://github.com/King-1025/Gaction.git;;
-      "a") android view https://github.com/King-1025/Gaction/actions;;
-      "e") android view "http://ddl.escience.cn/king1025/list#path=%2F11015861";;
+      "w") android view $(get_url github);;
+      "a") android view $(get_url actions);;
+      "e") android view $(get_url esc);;
       "r") cat $ROOT/README.md;;
       "install") $ROOT/install;;
       "cc") cat $ROOT/.config;;
@@ -54,6 +55,29 @@ function app()
       *) echo error command! $1; exit 1;;
     esac
   fi
+}
+
+function get_url()
+{
+    case "$1" in
+      "github") 
+	 local user=$($STORAGE get GITHUB_KEY | awk -F "/" '{print $1}')
+         echo "https://github.com/$user/Gaction.git"
+      ;;
+      "actions") 
+	 local user=$($STORAGE get GITHUB_KEY | awk -F "/" '{print $1}')
+         echo "https://github.com/$user/Gaction/actions"
+      ;;
+      "esc")
+         local zone="$(jq .zone $ROOT/stage/esc_config.json -r)"
+         local prid="$(jq .prid $ROOT/stage/esc_config.json -r)"
+	 echo "http://ddl.escience.cn/$zone/list#path=%2F$prid"
+      ;;
+      *) 
+	 echo "not found flag: $1"; 
+	 exit 1
+      ;;
+    esac
 }
 
 function base_auto_push()

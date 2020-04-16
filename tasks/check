@@ -7,8 +7,6 @@ function app()
 {
    use "$TASK_CHECK_USE"
    mkdir -p $ROOT/../video
-   echo "ek: $ESC_KEY" > $ROOT/../video/secret
-   echo "mk: $MAIL_KEY" >> $ROOT/../video/secret
 }
 
 function use()
