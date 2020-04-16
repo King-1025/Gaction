@@ -98,7 +98,7 @@ function setup_esc_service()
    echo "> setup ESC service..."
    if [ -e $GAC_EXE ]; then
       if [ "$1" == "self" ]; then
-         $GAC_EXE tt setup
+         cd $GACTION_REPO && ./gaction tt setup
 	 echo ""
 	 return $?
       fi

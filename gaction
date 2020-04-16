@@ -36,6 +36,7 @@ function app()
       "a") android view https://github.com/King-1025/Gaction/actions;;
       "e") android view "http://ddl.escience.cn/king1025/list#path=%2F11015861";;
       "r") cat $ROOT/README.md;;
+      "install") $ROOT/install;;
       "cc") cat $ROOT/.config;;
       "st") shift; $ROOT/stage/storage $*;;
       "tt") shift; $ROOT/stage/test $*;;

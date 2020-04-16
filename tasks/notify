@@ -82,7 +82,8 @@ function mail()
    else	
      echo Not found MAIL_KEY!
      rm $HTML
-     exit 1
+     echo "Sorry, Gaction doesn't send message to notify you!"
+     exit 0
    fi
    rm $HTML
   else
