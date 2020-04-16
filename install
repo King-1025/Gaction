@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+
+ROOT=$HOME
+GACTION_HOME=$ROOT/.gaction
+GACTION_REPO=$GACTION_HOME/Gaction
+GAC_EXE=$GACTION_REPO/gaction
+STORAGE=$GACTION_HOME/storage
+ESC_CONFIG=$GACTION_HOME/esc_config.json
+ESC_LOCAL_PATH=$HOME/storage/downloads/gaction
+SCRIPT=$PREFIX/bin/gac
+
+
+function app()
+{
+   prepare
+   create_gaction_home
+   ask_key ESC
+   storage ESC_KEY $ESC_KEY
+   ask_key Github
+   storage GITHUB_KEY $GITHUB_KEY
+   pull_my_gaction
+   setup_esc_service self
+   make_script
+   final
+}
+
+function final()
+{
+    echo "安装完毕！"
+}
+
+function prepare()
+{
+    check jq
+}
+
+function check()
+{
+   echo "check $1..."
+   which jq
+   if [ $? -ne 0 ]; then
+      apt install $1
+   fi
+   echo ""
+}
+
+function create_gaction_home()
+{
+   echo "> create Gaction home"
+   rm -rf $GACTION_HOME
+   mkdir $GACTION_HOME
+   echo "oK! $GACTION_HOME"
+   echo ""
+}
+
+function storage()
+{
+   if [ "$#" -ge 2 ]; then
+     local d="$1:$(echo "$2"|base64)"
+     if [ ! -e $STORAGE ]; then
+       echo $d > $STORAGE
+     else
+       echo $d >> $STORAGE
+     fi
+   fi
+}
+
+function ask_key()
+{
+  if [ $# -ge 1 ]; then
+    local flag="$1"
+    echo "> 配置$flag账号"
+    read -p "请输入用户名: " username
+    read -s -p "请输入密码: " password 
+    echo ""
+    case "$flag" in
+      "Github")
+	     GITHUB_KEY="$username/$password"
+	     GACTION_REPO_URL="https://github.com/$username/Gaction"
+      ;;
+      "ESC") ESC_KEY="$username/$password";;
+    esac
+    echo ""
+  fi
+}
+
+function pull_my_gaction()
+{
+   echo "> setup Gaction repo..."
+   git clone $GACTION_REPO_URL $GACTION_REPO -j 4
+#   cp $HOME/Gaction $GACTION_REPO -r
+   echo "oK! repo: $GACTION_REPO"
+   echo ""
+}
+
+function setup_esc_service()
+{
+   echo "> setup ESC service..."
+   if [ -e $GAC_EXE ]; then
+      if [ "$1" == "self" ]; then
+         $GAC_EXE tt setup
+	 echo ""
+	 return $?
+      fi
+      echo "create team..."
+      local zone=$($GAC_EXE ct gaction)
+      local prid=""
+      local part_id=""
+      if [ "$zone" != "" ]; then
+	 echo -e "success! zone: $zone\n" 
+	 echo "mkdir video..."
+	 prid=$($GAC_EXE tt "mkdir" "video" "0" "$zone" | jq .resource.rid -r)
+	 if [ "$prid" != "null" ]; then
+	    echo -e "success! prid: $prid\n"
+	    echo "mkdir video/part..."
+ 	    part_id=$($GAC_EXE tt "mkdir" "part" "$prid" "$zone" | jq .resource.rid -r)
+	    if [ "$part_id" != "" ]; then
+	       echo -e "success! part_id: $part_id\n"
+	    else
+               echo -e "failed\n"
+	    fi
+	 else
+            echo -e "failed\n"
+         fi
+         local local_path="$ESC_LOCAL_PATH"
+	 termux-setup-storage
+	 if [ ! -e $local_path ]; then
+	    mkdir $local_path
+	 fi
+	 ESC_ZONE=zone
+	 ESC_PRID=prid
+	 ESC_PARTID=part_id
+	 echo "{\"zone\":\"$zone\", \"prid\":\"$prid\", \"part_id\":\"$part_id\", \"local_path\":\"$local_path\"}" > $ESC_CONFIG
+      else
+	echo "failed!"
+	exit 1
+      fi
+   else
+      echo "$GAC_EXE not exists!"
+   fi
+}
+
+function make_script()
+{
+   echo "> make script..."
+   local tmp="$(mktemp -u)"
+   cat > $tmp << EOF
+#!/usr/bin/env bash
+
+if [ "\$1" == "bye" ]; then
+   while [ 1 == 1 ]; do
+     read -p "你确定要卸载Gaction吗？(y/N) " opt
+     case "\$opt" in
+	"y") break;;
+	"N") echo "撤销卸载！"; exit 0;; 
+     esac
+   done
+   echo 正在卸载...
+   gac tt quit_team > /dev/null
+   rm -rf $GACTION_HOME
+   rm -rf $SCRIPT
+   echo 卸载完毕！
+   exit 0
+fi
+
+cd $GACTION_REPO && ./gaction \$*
+EOF
+
+   mv $tmp $SCRIPT
+   chmod +x $SCRIPT
+   echo "oK! script: $SCRIPT"
+   echo ""
+}
+
+app $# $*

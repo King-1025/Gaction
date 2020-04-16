@@ -15,10 +15,16 @@ import json
 import urllib
 import requests
 
+import random
+import string
+
 from contextlib import closing
 
 from data import DATA
+from data import ESC_ZONE as ZONE
+from data import ESC_HOST as HOST
 from data import ESC_PRID as PRID
+from data import ESC_LOCAL_PATH as LPATH
 
 
 # 科研在线 http://ddl.escience.cn/king1025/list#path=%2F11015861
@@ -61,8 +67,81 @@ class Escience:
     #        print('login_page response oK!')
             self.auth()
 
-    def mkdir(self, name):
-        return self.base_mkdir(name, self.parentRid)
+    def check_team(self, tid):
+        url = DATA["api"]["check_team"]["url"]
+        url="%s&teamId=%s" % (url, tid)
+        r = self.session.get(url=url, headers=self.header)
+        #print(r.text)
+        if r.status_code == 200:
+           data=str(r.text)
+           if data == "true":
+              return True
+        return False
+
+    def create_team(self, name, tid=None, force=False, max=10):
+        rtid, i = tid, 0
+        while True:
+          if rtid is None:
+             rtid = "".join(random.sample(string.ascii_lowercase + string.digits, 8))
+             if tid is not None:
+                rtid="%s%s" %(tid, rtid)
+
+          print("check rtid: %s..." % rtid)
+          if not self.check_team(rtid):
+            print("failed!")
+            if tid is not None and force is False:
+                 sys.exit(1)
+            else:
+                 print("gen rtid again...\n")
+                 rtid=None
+          else:
+             print("success!\n")
+             break
+          if i < max:
+            i+=1
+          else:
+            print("beyond max: %d!\n" % max)
+            sys.exit(1)
+
+        print("send request...")
+        url = DATA["api"]["create_team"]["url"]
+        data = DATA["api"]["create_team"]["data"]
+        data["teamName"] = name
+        data["teamId"] = rtid
+        try:
+            r = self.session.post(url, headers=self.header, data=data, verify=False, allow_redirects=False)
+            r_location = r.headers['Location']
+            self.session.post(url=r_location, headers=self.header,verify=False,allow_redirects=False)
+            print('redirect url:%s' % r_location)
+            print("success!\n")
+            return rtid
+        except Exception as e:
+            print("create team failed!\n")
+            print(e)
+            sys.exit(1)
+
+    def quit_team(self, zone=None):
+        url = DATA["api"]["quit_team"]["url"]
+        data = DATA["api"]["quit_team"]["data"]
+        if zone:
+          data["teamName"] = str(zone)
+        else:
+          data["teamName"] = str(ZONE)
+        r = self.session.post(url=url, headers=self.header, data=data)
+        if r.status_code == 200:
+           sd=json.loads(r.text)
+           print(sd)
+           url = DATA["api"]["quit_team"]["url2"]
+           r = self.session.post(url=url, headers=self.header, data=data)
+           if r.status_code == 200:
+              self.data=json.loads(r.text)
+        return self
+
+    def mkdir(self, name, prid=None):
+        rid=self.parentRid
+        if prid:
+           rid=str(prid)
+        return self.base_mkdir(name, rid)
 
     def upload(self, path, name, parentRid=None):
         prid=parentRid
@@ -103,11 +182,14 @@ class Escience:
     def query(self):
         return self.base_query(self.parentRid)
     
-    def download(self, name, rid, path="/sdcard/O_o", _check=True):
+    def download(self, name, rid, path=LPATH, _check=True):
         return self.base_download(name, rid, path, _check)
 
-    def base_mkdir(self, name, prid):
+    def base_mkdir(self, name, prid, zone=None):
         url = DATA["api"]["mkdir"]["url"]
+        if zone:
+           url = "http://%s/%s/list" % (HOST, str(zone))
+
         data = DATA["api"]["mkdir"]["data"]
         data["fileName"] = name
         data["parentRid"] = prid

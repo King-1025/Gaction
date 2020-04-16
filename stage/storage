@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DATA=$HOME/.gaction
+DATA=$HOME/.gaction/storage
 
 function app()
 {

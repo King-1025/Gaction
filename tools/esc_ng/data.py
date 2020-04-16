@@ -1,15 +1,80 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; -*-
 
+import os
+import sys
+
 ESC_HOST="ddl.escience.cn"
-ESC_ZONE="king1025"
-ESC_PRID="11015861" #代表目录名: video
-ESC_PARTID="11327572" #代表目录名: part
+ESC_ZONE=os.getenv("ESC_ZONE")
+ESC_PRID=os.getenv("ESC_PRID")  #代表目录名: video
+ESC_PARTID=os.getenv("ESC_PARTID") #代表目录名: part
+ESC_LOCAL_PATH=os.getenv("ESC_LOCAL_PATH")
+ESC_CONFIG=os.getenv("ESC_CONFIG")
+ESC_HOME=os.getenv("ESC_HOME")
+
+if not ESC_HOME:
+  ESC_HOME=os.path.join(str(os.getenv("HOME")), ".gaction")
+
+if not ESC_CONFIG:
+  ESC_CONFIG=os.path.join(ESC_HOME, "esc_config.json")
+
+if not (ESC_ZONE and ESC_PRID and ESC_PARTID and ESC_LOCAL_PATH):
+   config=ESC_CONFIG
+   if os.path.exists(config):
+    try:
+      import json
+      with open(config, "r") as jf:
+         data=json.loads(jf.read())
+         if not ESC_ZONE and data["zone"]:
+            ESC_ZONE=data["zone"]
+         if not ESC_PRID and data["prid"]:
+            ESC_PRID=data["prid"]
+         if not ESC_PARTID and data["part_id"]:
+            ESC_PARTID=data["part_id"]
+         if not ESC_LOCAL_PATH and data["local_path"]:
+            ESC_LOCAL_PATH=data["local_path"]
+    except Exception as e:
+       print("config file invalid! %s" % config)     
+       print(e)
+       sys.exit(1)
+#   else: 
+#      print("warning: %s not exist!" % config)
+
+if not ESC_LOCAL_PATH:
+   ESC_LOCAL_PATH=os.path.join(str(os.getenv("HOME")), "storage", "downloads", "gaction")
+
+#print(ESC_ZONE)
+#print(ESC_PRID)
+#print(ESC_PARTID)
+#print(ESC_LOCAL_PATH)
 
 BASE_URL="http://%s/%s" % (ESC_HOST, ESC_ZONE)
 
 DATA={
   "api" : {
+      "quit_team" : {
+          "url" : "http://%s/system/quitTeam?func=quitTeamValidate" % ESC_HOST,
+          "url2" : "http://%s/system/quitTeam" % ESC_HOST,
+          "data" : {
+              "teamName" : ""
+          }
+      },
+      "check_team" : {
+          "url" : "http://%s/system/createTeam?func=validateTeamId" % ESC_HOST
+       },
+      "create_team" : {
+           "url" : "http://%s/system/createTeam" % ESC_HOST,
+           "data" : {
+               "func" : "createTeam",
+               "defaultMemberAuth" : "edit",
+               "teamName" : "",
+               "teamId" : "",
+               "accessType" : "private",
+               "auth" : "view",
+               "teamInfo" : "docManager",
+               "teamDescription" : ""
+           }
+      },
       "upload" : {
            "url" : "%s/upload?func=uploadFiles" % BASE_URL
       },

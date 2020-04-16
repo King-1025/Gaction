@@ -12,6 +12,8 @@ from tool import may_download_record
 from tool import exec_install_command
 
 from data import ESC_PARTID as PART_ID
+from data import ESC_CONFIG as CONFIG
+from data import ESC_LOCAL_PATH as LPATH
 
 
 if __name__ == '__main__':
@@ -27,7 +29,34 @@ if __name__ == '__main__':
     if esc.isLogin == True:
        action=str(sys.argv[3])
 
-       if action == "list":
+       if action == "setup":
+          print("* create team...")
+          zone=esc.create_team("gaction")
+          if zone:
+             print("* mkdir video...")
+             prid=esc.base_mkdir("video", "0", zone).data["resource"]["rid"]
+             if not prid:
+                prid="0"
+             print("success! prid: %s\n" % prid)
+             print("* mkdir video/part...")
+             part_id=esc.base_mkdir("part", prid, zone).data["resource"]["rid"]
+             if not part_id:
+                part_id="0"
+             print("success! part_id: %s\n" % part_id)
+             print("* check local path: %s..." % LPATH)
+             if not os.path.exists(LPATH):
+                print("* mkdir local path...")
+                os.makedirs(LPATH)
+                print("success!\n")
+             else:
+                print("skip!\n")
+             print("* gen config %s..." % CONFIG)
+             data=json.dumps({"zone":str(zone), "prid":str(prid), "part_id":str(part_id), "local_path":str(LPATH)})
+             with open(CONFIG, "w") as f:
+                  f.write(data)
+             print("success!")
+
+       elif action == "list":
           if argc > 4:
             prid=str(sys.argv[4])
             esc.base_query(prid).format()
@@ -39,6 +68,12 @@ if __name__ == '__main__':
 
        elif action == "query" and argc > 4:
           print(json.dumps(esc.base_query(str(sys.argv[4])).data))
+
+       elif action == "quit_team":
+          if argc > 4:
+             print(json.dumps(esc.quit_team(str(sys.argv[4])).data))
+          else:
+             print(json.dumps(esc.quit_team().data))
 
        elif action == "delete" and argc > 4:
           esc.delete(str(sys.argv[4]))
@@ -53,9 +88,23 @@ if __name__ == '__main__':
           esc.delete(rec)
           esc.delete(data["id"])
 
-       elif action == "mkdir" and argc > 4:
-          print(json.dumps(esc.mkdir(str(sys.argv[4])).data))
-          
+       elif action == "mkdir":
+          if argc == 5:
+             print(json.dumps(esc.mkdir(str(sys.argv[4])).data))
+          elif argc == 6:
+             print(json.dumps(esc.mkdir(str(sys.argv[4]), str(sys.argv[5])).data))
+          elif argc >= 7:
+             print(json.dumps(esc.base_mkdir(str(sys.argv[4]), str(sys.argv[5]), str(sys.argv[6])).data))
+
+       elif action == "create_team":
+          zone = None
+          if argc == 5:
+             zone=esc.create_team(str(sys.argv[4]))
+          elif argc >= 6:
+             zone=esc.create_team(str(sys.argv[4]), str(sys.argv[5]), force=True)
+          if zone is not None:
+             print(zone)
+
        elif action == "pure_download":
           if argc == 5:
              path=esc.download(None, str(sys.argv[4]), _check=False)

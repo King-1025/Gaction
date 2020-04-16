@@ -39,6 +39,7 @@ function app()
       "cc") cat $ROOT/.config;;
       "st") shift; $ROOT/stage/storage $*;;
       "tt") shift; $ROOT/stage/test $*;;
+      "ct") shift; $ROOT/stage/test create_team $*;;
       "ls") shift; $ROOT/stage/test list $*;;
       "rr") shift; $ROOT/stage/test delete_record $*;;
       "rm") shift; $ROOT/stage/test delete $*;;
