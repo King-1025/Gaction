@@ -15,7 +15,7 @@ ESC_HOME=os.getenv("ESC_HOME")
 if not ESC_HOME:
   ESC_HOME=os.path.join(os.getcwd(), "stage")
 
-print("ESC_HOME: %s" % ESC_HOME)
+#print("ESC_HOME: %s" % ESC_HOME)
 
 if not ESC_CONFIG:
   ESC_CONFIG=os.path.join(ESC_HOME, "esc_config.json")
