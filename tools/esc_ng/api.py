@@ -219,6 +219,8 @@ class Escience:
         else:
             self.data=None
             print("upload failed!")
+            # print(r.text)
+            sys.exit(1)
         return self
 
     def base_query(self, path):

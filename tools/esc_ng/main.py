@@ -165,6 +165,8 @@ if __name__ == '__main__':
                         break
                 if prid is None:
                    prid=esc.base_mkdir(ff, part).data["resource"]["rid"]
+                else:
+                   print("skip prid: %s" % prid)
                 record=[]
                 count, p_c=0, 0
                 total_size=0

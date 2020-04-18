@@ -75,6 +75,9 @@ function baidu()
   fi
   if [ ! -z $BAIDU_KEY ]; then
    local exe="$ROOT/tools/bin/BaiduPCS-Go"
+   if [ ! -z $BAIDU_EXE ]; then
+      exe=$BAIDU_EXE
+   fi
    local config="$ROOT/tools/bdwp/config"
    local path="/apps/baidu_shurufa/youtube"
    local comm="$exe login -bduss=$BAIDU_KEY"
