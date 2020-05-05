@@ -1,3 +1,3 @@
-# pla
+# 埋尸体
 ---
-https://filegroup.gtv.org/group1/vm3u8/20200504/19/42/5eb070170abe341b38d9a8fa/hls.1.m3u8 pla.mp4
+https://filegroup.gtv.org/group1/vm3u8/20200504/10/18/5eafebea0abe341b38cb08df/hls.m3u8 death.mp4
