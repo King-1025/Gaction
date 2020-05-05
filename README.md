@@ -1,3 +1,3 @@
-# whatsapp
+# 电脑版whatsapp
 ---
-https://d-10.winudf.com/b/APK/Y29tLndoYXRzYXBwXzQ1MzU0Nl9lNWJhMWYxZA?_fn=V2hhdHNBcHAgTWVzc2VuZ2VyX3YyLjIwLjE0N19hcGtwdXJlLmNvbS5hcGs&_p=Y29tLndoYXRzYXBw&am=IREynxVy9HuiR734ZB_O1A&at=1588689511&k=60a091c61f43363abb45794c80b3dd865eb2cbe8&uu=http%3A%2F%2F172.16.76.1%2Fb%2FAPK%2FY29tLndoYXRzYXBwXzQ1MzU0Nl9lNWJhMWYxZA%3Fk%3Dad369ef97f76712362c70dd6dc8c4c345eb2cbe8 whatsapp.apk
+https://dw29.uptodown.com/dwn/FWP5iUgs9TO09QYMkvYo59bPUwNTreuBJfvec-yi18xsnxGlRo05BmxbfB4OomwRV5e6Dcsg72evgmM1g61xEYvJ_navqH4IrlBK-qCd9DLsqKZZbTUabpKWPUoS0oWt/DNzWm3npIC2XNyN8-5imMSVhUa4g7Pi1_YImIMMVeXX2xEMbY_18S_z1S1U0HWwwJXshAxh-j10f4UBcTr8epclsdU8ERx_P6KQi81r0PMI67iSQCOybVOrjb8-dqqLM/HFsDGryRQn-GqNfC25j-oMCRsRQyktzZGRW8cBy2ae1j7ShiWmRyiMt7k1rygcbg/whatsapp-desktop-0-4-2088-0.exe whatsapp.exe
