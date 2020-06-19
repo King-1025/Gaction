@@ -22,6 +22,7 @@ function use()
 {
     case "$1" in
 	 "esc") esc;;
+	 "chx") chx;;
 	 "baidu") baidu;;
 	 "lanzou") lanzou;;
          *) echo "Upload for nothing. Try to export TASK_UPLOAD_USE=esc or TASK_UPLOAD_USE=baidu"; exit 1;;
@@ -65,7 +66,11 @@ function esc()
 #      local comm="$exe $INPUT $(basename $i)"
 #      echo $comm && $comm
 #   done
+}
 
+function chx()
+{
+    $ROOT/tools/bin/chx upload $INPUT
 }
 
 function baidu()
