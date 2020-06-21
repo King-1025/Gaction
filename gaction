@@ -6,6 +6,7 @@ CONFIG=$ROOT/.config
 UPSS=$ROOT/stage/upss
 STORAGE=$ROOT/stage/storage
 
+
 function app()
 {
   if [ $# -le 1 ]; then
@@ -51,11 +52,35 @@ function app()
       "in") shift; $ROOT/stage/test ipk $*;;
       "up") shift; $ROOT/stage/test upload $*;;
       "chx") shift; $ROOT/tools/bin/chx $*;;
+      "ci") shift; switch_ci $*;;
       "lz") shift; $ROOT/tools/bin/lanz;;
       "lzz") shift; $ROOT/tools/bin/lanz once 0 0 $*;;
       *) echo error command! $1; exit 1;;
     esac
   fi
+}
+
+function switch_ci()
+{
+     rm -rf $ROOT/azure-pipelines.yml
+     rm -rf $ROOT/.travis.yml
+     rm -rf $ROOT/.github/workflows/youtube.yml
+     local target_ci="disable all CIs!"
+     case "$1" in
+	"az"|"azure") 
+	    target_ci=$ROOT/azure-pipelines.yml
+	    cp $ROOT/stage/CI/azure.yml $target_ci	
+	    ;;
+        "tr"|"travis")
+	    target_ci=$ROOT/.travis.yml
+	    cp $ROOT/stage/CI/travis.yml $target_ci
+	;;
+        "gi"|"github")
+            target_ci=$ROOT/.github/workflows/youtube.yml
+            cp $ROOT/stage/CI/github.yml $target_ci	
+	;;
+     esac
+     echo $target_ci
 }
 
 function get_url()
