@@ -18,6 +18,7 @@ function app()
 function use()
 {
    case "$1" in
+	"skip") echo "skip notify Ok!";;
 	"mail") gen_report && mail;;
         *) echo "Notify for nothing. Try to export TASK_NOTIFY_USE=mail"; exit 1;;
    esac

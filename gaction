@@ -129,9 +129,9 @@ function base_auto_push()
    fi
    git add $ROOT && git commit $flag -m "$msg" && $UPSS -dt push
    if [ $? -eq 0 ]; then
-      echo "Gaction推送任务成功，离线下载将在稍后开始，请注意查收邮件！"
+      echo -e "\e[5;32mGaction推送任务成功，离线下载将在稍后开始，请注意查收邮件！\e[m"
    else
-      echo "Gaction推送任务失败！"
+      echo -e "\e[5;31mGaction推送任务失败！\e[m"
       exit 1
    fi
 }
