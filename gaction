@@ -28,7 +28,7 @@ function app()
       "adc") shift; add_command $*;;
       "config") shift; config $*;;
       "aup") shift; auto_push $*;;
-      "faup") shift; force_auto_push $*;;
+      "aupp") shift; force_auto_push $*;;
       "g") shift; git $*;;
       "gvs") git status;;
       "gd") git diff;;
