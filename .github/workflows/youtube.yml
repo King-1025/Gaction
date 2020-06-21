@@ -1,8 +1,8 @@
 name: YouTube视频转存
 
-on:  [push]
-# issues:
-#    types: [opened]
+on: # [push]
+ issues:
+    types: [opened]
 
 jobs:
   build:
