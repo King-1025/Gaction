@@ -2,6 +2,7 @@ dist: bionic
 language: python
 python:
   - "3.8"
+
 install:
    - ./gaction check
    - ./gaction download
@@ -9,6 +10,9 @@ install:
    - ./gaction compress
    - ./gaction upload
    - ./gaction notify
+script:
+   - echo oK!
+
 notifications:
   email:
     - github_king_1025@163.com
