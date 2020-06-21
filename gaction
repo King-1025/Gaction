@@ -37,6 +37,8 @@ function app()
       "w") android view $(get_url github);;
       "a") android view $(get_url actions);;
       "e") android view $(get_url esc);;
+      "z") android view $(get_url azure);;
+      "t") android view $(get_url travis);;
       "r") cat $ROOT/README.md;;
       "install") $ROOT/install;;
       "cc") cat $ROOT/.config;;
@@ -98,6 +100,12 @@ function get_url()
          local zone="$(jq .zone $ROOT/stage/esc_config.json -r)"
          local prid="$(jq .prid $ROOT/stage/esc_config.json -r)"
 	 echo "http://ddl.escience.cn/$zone/list#path=%2F$prid"
+      ;;
+      "travis")
+         echo "https://www.travis-ci.org/github/King-1025/Gaction"
+      ;;
+      "azure")
+	 echo "https://dev.azure.com/King-1025/Gaction/_build"
       ;;
       *) 
 	 echo "not found flag: $1"; 

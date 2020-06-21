@@ -1,0 +1,8 @@
+dist: bionic
+install:
+   - ./gaction check
+   - ./gaction download
+   - ./gaction split
+   - ./gaction compress
+   - ./gaction upload
+   - ./gaction notify
