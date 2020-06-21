@@ -1,4 +1,7 @@
 dist: bionic
+language: python
+python:
+  - "3.8"
 install:
    - ./gaction check
    - ./gaction download
