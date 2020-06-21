@@ -9,3 +9,6 @@ install:
    - ./gaction compress
    - ./gaction upload
    - ./gaction notify
+notifications:
+  email:
+    - github_king_1025@163.com
