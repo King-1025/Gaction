@@ -2,11 +2,31 @@
 # -*- utf-8; -*-
 
 
-CHXPAN_HOST="pan-yz.chaoxing.com"
-CXP_PARTID="480436215806652416"
+
+CXP_HOST="test"
+CXP_USER="16530800938"
+CXP_PSWD="12345678T"
+CXP_PARENTID="481515948815077376"
+CXP_PARTID=CXP_PARENTID
+CXP_ENC="a9183addea85e0ab95950a355cdf11d9"
+CXP_PUID_ROOT="0"
+CXP_PUID="143282464"
+CXP_LPATH="/sdcard/Download/gaction"
+
+
+CHXPAN_HOST_MAIN="pan-yz.chaoxing.com"
+CHXPAN_HOST_TEST="test.pan.chaoxing.com"
+
+CHXPAN_HOST = CHXPAN_HOST_MAIN
+
+if CXP_HOST == "test":
+   CHXPAN_HOST = CHXPAN_HOST_TEST
 
 BASE_URL="http://%s" % CHXPAN_HOST
 OPT_URL="%s/opt" % BASE_URL
+REC_URL="%s/recycle" % BASE_URL
+DA_URL="http://d0.ananas.chaoxing.com"
+
 USER_AGENT='Mozilla/5.0 (Linux; Android 5.1; OPPO R7s Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/81.0.4044.138 Mobile Safari/537.36'
 
 AUTH_HOST="passport2.chaoxing.com"
@@ -17,6 +37,17 @@ DEFAULT_COOKIE_PATH="stage/cookie.json"
 DATA={
         "cookie" : DEFAULT_COOKIE_PATH,
         "api":{
+            "recycle": {
+                 "empty":{
+                    "url":"%s/empty" % REC_URL
+                }
+            },
+            "download":{
+                "url":"%s/download" % DA_URL
+            },
+            "delete":{
+                "url":"%s/delres" % OPT_URL
+            },
             "mkdir":{
                 "url":"%s/newfolder" % OPT_URL
             },
@@ -83,17 +114,17 @@ DATA={
                 "end":"false",
                 "action":"normal",
                 "current":[],
-                "parentId":"478835463468314624",
+                "parentId":CXP_PARENTID,
                 "choosed":{},
                 "choosedlen":0,
                 "foldercounter":0,
                 "speedclasscon":0,
                 "foldernewcounter":0,
-                "puid":0,
+                "puid":CXP_PUID_ROOT,
                 "isshare":"false",
                 "istome":"false",
                 "foldertomecounter":0,
                 "shareid":0
         },
-        "enc" : "3c15cae99038654d85ca48de12b70d3b"
+        "enc" : CXP_ENC
 }

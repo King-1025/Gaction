@@ -3,14 +3,16 @@
 
 
 import os
+import re
 import sys
 import json
 import time
 import base64
 import requests
 from requests_toolbelt.multipart import encoder
+from contextlib import closing
 
-from data import DATA
+from data import DATA, CXP_USER, CXP_PSWD, CXP_PUID_ROOT, CXP_PUID, CXP_LPATH
 from tool import progress, bytes2human, formatSimpleTime, getFileLastGMTime 
 
 
@@ -42,14 +44,19 @@ class ChaoXingPAN:
         return self
 
     def setName(self, name):
-        self.name = name
+        if name is not None:
+           self.name = name
+        else:
+           self.name = CXP_USER
         return self
 
     def setPassword(self, password):
-        if password is None:
-          self.password = None
+        if password is not None:
+           self.password = password
         else:
-          pswd_bytes = bytes(password, encoding='utf-8')
+           self.password = CXP_PSWD
+        if self.password is not None:
+          pswd_bytes = bytes(self.password, encoding='utf-8')
           self.password = str(base64.b64encode(pswd_bytes), encoding='utf-8')
         return self
 
@@ -151,7 +158,7 @@ class ChaoXingPAN:
         data = {}
         return self.base_post(url, header, data)
 
-    def base_post(self, url, header, data):
+    def base_post(self, url, header, data=None):
         r = self.session.post(url=url, headers=header, data=data)
         if r.status_code == 200:
            self.data=json.loads(r.text)
@@ -175,13 +182,39 @@ class ChaoXingPAN:
         }
         return self.base_post(url, header, data)
 
+    def empty_recycle(self):
+        url = DATA["api"]["recycle"]["empty"]["url"]
+        header = DATA["pan_header"]
+        return self.base_post(url, header)
+
+    def delete(self, ids):
+        size = len(ids)
+        if size <= 0:
+           return self
+        url = DATA["api"]["delete"]["url"]
+        header = DATA["pan_header"]
+        resids=""
+        resourcetype=""
+        puids=""
+        for i in ids:
+            resids="%s,%s" % (str(i), resids)
+            resourcetype="0,%s" % resourcetype
+            puids="%s,%s" %(str(CXP_PUID), puids)
+        data = {
+                "resids" : resids,
+                "resourcetype" : resourcetype,
+                "puids" : puids
+        }
+        #print(data)
+        return self.base_post(url, header, data)
+
     def check_puid(self, parentId, puid):
         _puid = puid
         if _puid is None:
            if parentId == self.res["parentId"]:
-              _puid = "0"
+              _puid = CXP_PUID_ROOT
            else:
-              _puid = "142823964"
+              _puid = CXP_PUID
         return _puid
 
     def query(self, parentId=None, puid=None):
@@ -304,7 +337,7 @@ class ChaoXingPAN:
 
     def format(self):
         data=self.data
-        if data is not None:
+        if data is not None and "list" in data:
            i=0
            print("details:\n")
            for ch in data["list"]:
@@ -327,3 +360,59 @@ class ChaoXingPAN:
            print("total: %d\n" % i)
         else:
            print("data is null!")
+
+    def download(self, name, rid, path=None, _check=True):
+        if path is None:
+           return self.base_download(name, rid, CXP_LPATH, _check)
+        else:
+           return self.base_download(name, rid, path, _check)
+
+    def base_download(self, name, rid, _dir, _check):
+        url = DATA["api"]["download"]["url"]
+        url = "%s/%s" % (url, str(rid))
+
+        print("name: %s" %name)
+        print("oid: %s\n" %rid)
+
+        path=None
+        
+        print("fetch %s ..." % url)
+
+        with closing(self.session.get(url,headers=self.header,stream=True)) as response:
+             if name is None:
+               line=response.headers['Content-Disposition']
+               matchObj = re.search( r'.*filename=(.*);.*', line, re.M|re.I)
+               if matchObj:
+                  name=matchObj.group(1)
+               else:
+                  print("No match!!")
+                  sys.exit(0)
+             else:
+                #path=name
+                pass
+
+             chunk_size = 1024  # 单次请求最大值
+             content_size = int(response.headers['content-length'])
+#             print((response.headers))
+             data_count = 0
+             path=os.path.join(_dir, name)
+             print("name: %s" %name)
+             print("path: %s" %path)
+             print("")
+             if _check is True:
+                 if os.path.isfile(path):
+                     print("%s exist!" %path)
+                     return path
+             
+             with open(path, "wb") as file:
+                for data in response.iter_content(chunk_size=chunk_size):
+                    file.write(data)
+                    data_count = data_count + len(data)
+                    now_jd = (data_count / content_size) * 100
+                    #print("\r%s：%d%% (%s/%s) " % (name, now_jd,
+                    print("\rstatus: %3d%% (%6s /%6s) " % (now_jd,
+                      self.bytes2human(data_count), 
+                      self.bytes2human(content_size)), end=" ")
+
+             print("\n\n%s" % path)
+             return path

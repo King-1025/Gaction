@@ -7,6 +7,7 @@ import json
 import time
 from api import ChaoXingPAN
 from data import CXP_PARTID as PART_ID
+from tool import may_download_record
 
 
 if __name__ == "__main__":
@@ -15,8 +16,7 @@ if __name__ == "__main__":
     if argc < 2:
        print("it needs 2 arguments at least!")
        sys.exit(1)
-    #cxp = ChaoXingPAN().setQuite(True).login()
-    cxp = ChaoXingPAN("18749089524", "12345678x").setQuite(True).login()
+    cxp = ChaoXingPAN().setQuite(True).login()
     if cxp.isLogin:
        action = str(sys.argv[1])
        if action == "list":
@@ -25,11 +25,34 @@ if __name__ == "__main__":
             cxp.base_query(prid).format()
           else:
             cxp.query().format()
+       elif action == "empty_rec":
+            print(json.dumps(cxp.empty_recycle().data))
+       elif action == "delete":
+          if argc > 2:
+             ids = sys.argv[2:]
+             print(json.dumps(cxp.delete(ids).data))
+       elif action == "mkdir":
+          if argc > 3:
+             print(json.dumps(cxp.mkdir(str(sys.argv[2]), str(sys.argv[3])).data))
+          elif argc > 2:
+             print(json.dumps(cxp.mkdir(str(sys.argv[2])).data))
        elif action == "query":
           if argc > 2:
              print(json.dumps(cxp.query(str(sys.argv[2])).data))
           else:
              print(json.dumps(cxp.query().data))
+       elif action == "pure_download":
+          if argc == 3:
+             path=cxp.download(None, str(sys.argv[2]), _check=False)
+          elif argc >= 4:
+             path=cxp.download(str(sys.argv[3]), str(sys.argv[2]), _check=False)
+       elif action == "download":
+          if argc == 3:
+             path=cxp.download(None, str(sys.argv[2]), _check=False)
+          elif argc >= 4:
+             path=cxp.download(str(sys.argv[3]), str(sys.argv[2]), _check=False)
+
+          may_download_record(cxp, path)
        elif action == "upload" and argc > 2: 
           path = str(sys.argv[2])
           if os.path.exists(path) is False:
@@ -38,7 +61,7 @@ if __name__ == "__main__":
           part=PART_ID
           if os.path.isfile(path):
              print("> upload file: %s" % path)
-             cxp.upload(path, part)
+             cxp.upload(path, parentId=part)
              print(cxp.data)
           elif os.path.isdir(path):
             work_dir = path
@@ -48,7 +71,9 @@ if __name__ == "__main__":
               if os.path.isdir(pp):
                 print("> upload_dir: %s" % ff)
                 #print("\033[1;6;37m> upload_dir: %s\033[m" % ff)
-                ch_list=cxp.base_query(part).data["list"]
+                ch_list = []
+                if "list" in cxp.base_query(part).data:
+                   ch_list=cxp.data["list"]
                 prid=None
                 for ch in ch_list:
                   if ff == ch["name"]:
@@ -56,7 +81,9 @@ if __name__ == "__main__":
                         prid=ch["id"]
                         break
                 if prid is None:
-                   prid=cxp.base_mkdir(ff, part).data["data"]["id"]
+                   prid = part
+                   if "data" in cxp.base_mkdir(ff, part).data:
+                       prid = cxp.data["data"]["id"]
                 else:
                    print("skip prid: %s" % prid)
                 record=[]
@@ -69,8 +96,11 @@ if __name__ == "__main__":
                      print("\033[1;6;32m> upload part %s... (%d/%d %d:%d)\033[m" % (ch_ff, f_l, f_c, p_c, count))
                      ch_path = os.path.join(parent, ch_ff)
                      size = os.path.getsize(ch_path)
+                     print("ch_path: %s" % ch_path)
+                     print("prid: %s" % prid)
                      cxp.upload(ch_path, prid)
                      #print(cxp.data)
+                     #print()
                      if cxp.data is None:
                         continue
                      if "success" in cxp.data:
