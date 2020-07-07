@@ -34,11 +34,11 @@ function app()
       "gd") git diff;;
       "glog"|"gl") git log --oneline --decorate --graph;;
       "c") shift; $*;;
-      "w") android view $(get_url github);;
-      "a") android view $(get_url actions);;
-      "e") android view $(get_url esc);;
-      "z") android view $(get_url azure);;
-      "t") android view $(get_url travis);;
+      "w") os browser via $(get_url github);;
+      "a") os browser via $(get_url actions);;
+      "e") os browser via $(get_url esc);;
+      "z") os browser via $(get_url azure);;
+      "t") os browser via $(get_url travis);;
       "r") cat $ROOT/README.md;;
       "install") $ROOT/install;;
       "cc") cat $ROOT/.config;;

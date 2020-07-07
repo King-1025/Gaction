@@ -1,0 +1,35 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: # none
+   - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - script: ./gaction check
+    displayName: 准备环境
+
+  - script: ./gaction download
+    displayName: 获取视频
+
+  - script: ./gaction split
+    displayName: 分割文件
+
+  - script: ./gaction compress
+    displayName: 压缩文件
+ 
+  - script: ./gaction upload
+    displayName: 云盘上传
+    env:
+      ESC_KEY: $(ESC_KEY)
+      BAIDU_KEY: $(BAIDU_KEY)
+      LANZOU_KEY: $(LANZOU_KEY)
+
+  - script: ./gaction notify
+    displayName: 发送通知
+    env:
+      MAIL_KEY: $(MAIL_KEY)
