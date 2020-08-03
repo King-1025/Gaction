@@ -1,3 +1,3 @@
-# gst-1.16.2
+# vlc
 ---
-https://gstreamer.freedesktop.org/data/pkg/android/1.16.2/gstreamer-1.0-android-universal-1.16.2.tar.xz
+https://code.videolan.org/videolan/libvlc-android-samples/-/archive/master/libvlc-android-samples-master.tar.gz
