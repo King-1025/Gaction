@@ -47,12 +47,13 @@ if __name__ == "__main__":
           elif argc >= 4:
              path=cxp.download(str(sys.argv[3]), str(sys.argv[2]), _check=False)
        elif action == "download":
+          path = None
           if argc == 3:
              path=cxp.download(None, str(sys.argv[2]), _check=False)
           elif argc >= 4:
              path=cxp.download(str(sys.argv[3]), str(sys.argv[2]), _check=False)
-
-          may_download_record(cxp, path)
+          if path is not None:
+             may_download_record(cxp, path)
        elif action == "upload" and argc > 2: 
           path = str(sys.argv[2])
           if os.path.exists(path) is False:
