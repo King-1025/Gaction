@@ -17,7 +17,8 @@ if __name__ == "__main__":
      sys.exit(0)
 
   with open(inf, "r") as f:
-     data = yaml.load(f,  Loader=yaml.FullLoader)
+     # data = yaml.load(f,  Loader=yaml.FullLoader)
+     data = yaml.load(f)
      with open(ouf, "a+") as o:
        for video in data["details"]:
            name="glive_%s-%d" % (video["publish"], video["video"])
