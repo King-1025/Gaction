@@ -344,7 +344,7 @@ class ChaoXingPAN:
                print("  - id: %d" % i)
                print("    name: %s" % ch["name"])
                print("    size: %s" % bytes2human(ch["filesize"]))
-               print("    time: %s" % formatSimpleTime(ch["uploadDate"]))
+               print("    time: %s" % formatSimpleTime(ch["uploadDate"]/1000))
                suffix = ch["suffix"]
                isfile = ch["isfile"]
                if suffix == "" and not isfile:

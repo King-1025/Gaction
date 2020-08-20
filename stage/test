@@ -3,8 +3,14 @@
 ROOT=$(pwd)
 STORAGE=$ROOT/stage/storage
 ESC_NG=$ROOT/tools/bin/esc_ng
+CHX=$ROOT/tools/bin/chx
 
 function app()
+{
+   $CHX $*
+}
+
+function esc()
 {
    local key=$($STORAGE get ESC_KEY)
    if [ "$key" != "" ]; then
