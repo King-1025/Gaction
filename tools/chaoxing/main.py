@@ -71,7 +71,7 @@ if __name__ == "__main__":
               pp = os.path.join(work_dir, ff)
               if os.path.isdir(pp):
                 print("> upload_dir: %s" % ff)
-                #print("\033[1;6;37m> upload_dir: %s\033[m" % ff)
+                print("\033[1;6;37m> upload_dir: %s\033[m" % ff)
                 ch_list = []
                 if "list" in cxp.base_query(part).data:
                    ch_list=cxp.data["list"]

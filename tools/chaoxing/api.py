@@ -293,7 +293,8 @@ class ChaoXingPAN:
         if r.status_code == 200 and self.data["success"]:
            print("upload success!")
         else:
-           print("upload failed!")
+           print("upload failed! ")
+           print(self.data)
         return self
 
     def createfile(self, path, parentId, puid, _call_back=None):
