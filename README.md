@@ -1,3 +1,3 @@
-# lpds
+# lude
 ---
-http://dx.weidown.com/202007/LPDS_3.2.3.2_HzMod.apk
+https://m.youtube.com/watch?v=1-2VAlou0kY
