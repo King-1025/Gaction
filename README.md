@@ -1,3 +1,3 @@
-# lude
+# video: 1
 ---
-https://m.youtube.com/watch?v=1-2VAlou0kY
+cmake-win video_1
