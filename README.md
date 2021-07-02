@@ -1,3 +1,3 @@
-# video: 1
+# video: 2
 ---
-cmake-win video_1
+cmake-win video_2
